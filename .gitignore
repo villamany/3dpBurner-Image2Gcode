@@ -72,6 +72,4 @@ packages/
 /bin/*
 !/bin/Release
 /bin/release/*
-!/bin/Release/3dpBurnerSender.exe
-
-!/bin/Release/3dpBurnerSender.exe
+!/bin/Release/3dpBurner Image2Gcode.exe

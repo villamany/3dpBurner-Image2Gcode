@@ -7,8 +7,8 @@
     <ProjectGuid>{496E57A8-49C8-44DB-BF07-622A62A882EF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_3dpBurnerImageGenerator</RootNamespace>
-    <AssemblyName>3dpBurnerImageGenerator</AssemblyName>
+    <RootNamespace>_3dpBurnerImage2Gcode</RootNamespace>
+    <AssemblyName>3dpBurner Image2Gcode</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
