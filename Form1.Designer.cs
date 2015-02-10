@@ -56,7 +56,7 @@ namespace WindowsFormsApplication1
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbUseS = new System.Windows.Forms.RadioButton();
             this.rbUseZ = new System.Windows.Forms.RadioButton();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.cbEdgeLines = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.rtbPostGcode = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -130,7 +130,7 @@ namespace WindowsFormsApplication1
             this.tabPage2.Controls.Add(this.comboBox1);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Controls.Add(this.checkBox3);
+            this.tabPage2.Controls.Add(this.cbEdgeLines);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.rtbPostGcode);
             this.tabPage2.Controls.Add(this.label3);
@@ -224,16 +224,17 @@ namespace WindowsFormsApplication1
             this.rbUseZ.Text = "Use \'Z\'";
             this.rbUseZ.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // cbEdgeLines
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Enabled = false;
-            this.checkBox3.Location = new System.Drawing.Point(6, 324);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(110, 17);
-            this.checkBox3.TabIndex = 15;
-            this.checkBox3.Text = " Edge lines (toDo)";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.cbEdgeLines.AutoSize = true;
+            this.cbEdgeLines.Checked = true;
+            this.cbEdgeLines.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbEdgeLines.Location = new System.Drawing.Point(46, 311);
+            this.cbEdgeLines.Name = "cbEdgeLines";
+            this.cbEdgeLines.Size = new System.Drawing.Size(112, 17);
+            this.cbEdgeLines.TabIndex = 15;
+            this.cbEdgeLines.Text = "Engrave edge line";
+            this.cbEdgeLines.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -275,9 +276,9 @@ namespace WindowsFormsApplication1
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(46, 345);
+            this.btnGenerate.Location = new System.Drawing.Point(34, 345);
             this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(94, 23);
+            this.btnGenerate.Size = new System.Drawing.Size(133, 23);
             this.btnGenerate.TabIndex = 0;
             this.btnGenerate.Text = "Generate file...";
             this.btnGenerate.UseVisualStyleBackColor = true;
@@ -495,6 +496,7 @@ namespace WindowsFormsApplication1
             this.btnCheckOrig.TabIndex = 2;
             this.btnCheckOrig.Text = "Check Original";
             this.btnCheckOrig.UseVisualStyleBackColor = true;
+            this.btnCheckOrig.Click += new System.EventHandler(this.btnCheckOrig_Click);
             this.btnCheckOrig.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseDown);
             this.btnCheckOrig.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseUp);
             // 
@@ -652,7 +654,7 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.RichTextBox rtbPreGcode;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox rtbPostGcode;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox cbEdgeLines;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tbRes;
