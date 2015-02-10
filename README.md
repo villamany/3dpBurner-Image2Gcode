@@ -24,30 +24,4 @@ Check the "Releases" for release versions and .exe files.
 //-------------------- Changelog ------------------------
 //-------------------------------------------------------
 
-//-------------------------------------------------------
-v0.2
-//-------------------------------------------------------
-//Some stability issues fixed.
-
-//Added support for 2 and 3 axis laser cutter and 3 axis milling.
-
-//Visual improvments
-
-//Code cleanup
-
-//Added more info about license
-
-//-------------------------------------------------------
-v0.1.1
-//-------------------------------------------------------
-// Improved file streaming speed: On file streaming all line responses was added to log console. this produce a slowly file streaming due many visual lines to move. Now only add lines if response is not "ok"
-
-// Removed "stop" button it no was canceling instantly, now only "start" button enabled/disabled during streaming, press reset if you want to cancel the work.
-
-// Added bufer status text near progress bar
-
-// Added total processed lines on the total lines label
-
-// Other minor changes
-
-v0.1 Initial release
+none
