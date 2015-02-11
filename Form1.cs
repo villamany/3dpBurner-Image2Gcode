@@ -1,4 +1,5 @@
-﻿
+﻿/*Changelog since last commit:
+
 /*  3dpBurner Image2Gcode. A Image to GCODE converter for GRBL based devices.
     This file is part of 3dpBurner Image2Gcode application.
    
@@ -37,6 +38,7 @@ namespace WindowsFormsApplication1
         const string ver = "v0.1development";
         Bitmap originalImage;
         Bitmap adjustedImage;
+        Bitmap backupImage;//for some functions
         float lastValue;//Aux for apply processing to image only when a new value is detected
         public Form1()
         {
@@ -69,7 +71,7 @@ namespace WindowsFormsApplication1
             GraphicsUnit.Pixel, imageAttributes);
         }    
         //Auxiliar function. Return a grayscale version of a image
-        public static Bitmap imgGrayscale(Bitmap original)
+        private static Bitmap imgGrayscale(Bitmap original)
         {
             Bitmap newBitmap = new Bitmap(original.Width, original.Height);//create a blank bitmap the same size as original
             Graphics g = Graphics.FromImage(newBitmap);//get a graphics object from the new image
@@ -92,6 +94,31 @@ namespace WindowsFormsApplication1
             g.Dispose();//dispose the Graphics object
             return newBitmap;
         }
+        //Auxiliar function. Return a inverted colors version of a image
+        private static Bitmap imgInvert(Bitmap original)
+        {
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);//create a blank bitmap the same size as original
+            Graphics g = Graphics.FromImage(newBitmap);//get a graphics object from the new image
+            //create the grayscale ColorMatrix
+            ColorMatrix colorMatrix = new ColorMatrix(
+               new float[][] 
+                {
+                    new float[] {-1, 0, 0, 0, 0},
+                    new float[] {0, -1, 0, 0, 0},
+                    new float[] {0, 0, -1, 0, 0},
+                    new float[] {0, 0, 0, 1, 0},
+                    new float[] {1, 1, 1, 0, 1}
+                });
+            ImageAttributes attributes = new ImageAttributes();//create some image attributes
+            attributes.SetColorMatrix(colorMatrix);//set the color matrix attribute
+
+            //draw the original image on the new image using the grayscale color matrix
+            g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+               0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+            g.Dispose();//dispose the Graphics object
+            return newBitmap;
+        }
+
         //Auxiliar function. Resize image to desired width/height for gcode generation
         //Calculate the needled pixel-sized from uset input widht-height-resolution
         private void imgResize()
@@ -180,6 +207,7 @@ namespace WindowsFormsApplication1
             if (!File.Exists(openFileDialog1.FileName)) return;
             lblStatus.Text = "Loading original image...";
             Refresh();
+            backupImage = adjustedImage;
             adjustedImage = imgGrayscale(originalImage);
             pictureBox1.Image = adjustedImage;
             lblStatus.Text = "Done";
@@ -187,7 +215,9 @@ namespace WindowsFormsApplication1
         //Reload the processed image after temporal preiew of the original image
         private void btnCheckOrig_MouseUp(object sender, MouseEventArgs e)
         {
-            adjustImg();
+            if ((backupImage==null)|(adjustedImage==null)) return;//if no image, do nothing
+            adjustedImage = backupImage;
+            pictureBox1.Image = adjustedImage;
         }
         //Resolution changed by user. Update image.
         private void tbRes_TextChanged(object sender, EventArgs e)
@@ -343,6 +373,10 @@ namespace WindowsFormsApplication1
             float resol=Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);//Resolution (or laser spot size)
             if (rbUseS.Checked) szChar = 'S'; else sz = 'Z';
 
+            //first Gcode line
+            line = "M5\r";//Make sure laser off
+            fileLines.Add(line);
+
             //Add the pre-Gcode lines
             lastX = -1;//reset last positions
             lastY = -1;
@@ -351,8 +385,6 @@ namespace WindowsFormsApplication1
             {
                 fileLines.Add(s);
             }
-            line = "M5\r";//Make sure laser off
-            fileLines.Add(line);
             line = "G90\r";//Absolute coordinates
             fileLines.Add(line);
             line = "G21\r";//Metric units
@@ -445,10 +477,60 @@ namespace WindowsFormsApplication1
             File.WriteAllLines(saveFileDialog1.FileName , fileLines);
             lblStatus.Text="Done";
         }
-
-        private void btnCheckOrig_Click(object sender, EventArgs e)
+        //Horizontal mirroing
+        private void btnHorizMirror_Click(object sender, EventArgs e)
         {
-
+            if (adjustedImage == null) return;//if no image, do nothing
+            adjustedImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            originalImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            pictureBox1.Image = adjustedImage;
         }
+        //Vertical mirroing
+        private void btnVertMirror_Click(object sender, EventArgs e)
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            adjustedImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            originalImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            pictureBox1.Image = adjustedImage;
+        }
+        //Rotate right
+        private void btnRotateRight_Click(object sender, EventArgs e)
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            adjustedImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            originalImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            ratio = 1 / ratio;
+            tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
+            adjustImg();
+            imgResize();
+            pictureBox1.Image = adjustedImage;
+        }
+        //Rotate left
+        private void btnRotateLeft_Click(object sender, EventArgs e)
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            adjustedImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            originalImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            ratio = 1 / ratio;
+            tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
+            adjustImg();
+            imgResize();
+            pictureBox1.Image = adjustedImage;
+        }
+        //Invert image color
+        private void btnInvert_Click(object sender, EventArgs e)
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            adjustedImage = imgInvert(adjustedImage);
+            originalImage= imgInvert(originalImage);
+            pictureBox1.Image = adjustedImage;
+        }
+
+
+
+
+
+
+
     }
 }

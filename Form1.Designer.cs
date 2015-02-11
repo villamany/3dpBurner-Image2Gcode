@@ -45,8 +45,8 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -63,6 +63,12 @@ namespace WindowsFormsApplication1
             this.rtbPreGcode = new System.Windows.Forms.RichTextBox();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnInvert = new System.Windows.Forms.Button();
+            this.btnRotateLeft = new System.Windows.Forms.Button();
+            this.btnRotateRight = new System.Windows.Forms.Button();
+            this.btnVertMirror = new System.Windows.Forms.Button();
+            this.btnHorizMirror = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tbRes = new System.Windows.Forms.TextBox();
@@ -88,20 +94,22 @@ namespace WindowsFormsApplication1
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tBarGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBarBrightness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBarContrast)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -110,18 +118,6 @@ namespace WindowsFormsApplication1
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.bmp)| *.jpg; *.jpeg; *.jpe; *" +
     ".jfif; *.png; *.bmp|All files(*.*)|*.*";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(400, 400);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // tabPage2
             // 
@@ -146,22 +142,22 @@ namespace WindowsFormsApplication1
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(4, 270);
+            this.label12.Location = new System.Drawing.Point(4, 269);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(81, 13);
+            this.label12.Size = new System.Drawing.Size(91, 13);
             this.label12.TabIndex = 20;
-            this.label12.Text = "Scanning mode";
+            this.label12.Text = "Engraving pattern";
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "Horizontal"});
-            this.comboBox1.Location = new System.Drawing.Point(6, 284);
+            this.comboBox1.Location = new System.Drawing.Point(6, 285);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(180, 21);
             this.comboBox1.TabIndex = 19;
-            this.comboBox1.Text = "Horizontal";
+            this.comboBox1.Text = "Horizontal scanning";
             // 
             // groupBox3
             // 
@@ -229,7 +225,7 @@ namespace WindowsFormsApplication1
             this.cbEdgeLines.AutoSize = true;
             this.cbEdgeLines.Checked = true;
             this.cbEdgeLines.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbEdgeLines.Location = new System.Drawing.Point(46, 311);
+            this.cbEdgeLines.Location = new System.Drawing.Point(44, 316);
             this.cbEdgeLines.Name = "cbEdgeLines";
             this.cbEdgeLines.Size = new System.Drawing.Size(112, 17);
             this.cbEdgeLines.TabIndex = 15;
@@ -276,7 +272,7 @@ namespace WindowsFormsApplication1
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(34, 345);
+            this.btnGenerate.Location = new System.Drawing.Point(31, 345);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(133, 23);
             this.btnGenerate.TabIndex = 0;
@@ -287,6 +283,7 @@ namespace WindowsFormsApplication1
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Window;
+            this.tabPage1.Controls.Add(this.groupBox4);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.lblGamma);
@@ -306,6 +303,76 @@ namespace WindowsFormsApplication1
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Image";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.btnInvert);
+            this.groupBox4.Controls.Add(this.btnRotateLeft);
+            this.groupBox4.Controls.Add(this.btnRotateRight);
+            this.groupBox4.Controls.Add(this.btnVertMirror);
+            this.groupBox4.Controls.Add(this.btnHorizMirror);
+            this.groupBox4.Location = new System.Drawing.Point(6, 244);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(178, 54);
+            this.groupBox4.TabIndex = 24;
+            this.groupBox4.TabStop = false;
+            // 
+            // btnInvert
+            // 
+            this.btnInvert.BackgroundImage = global::_3dpBurnerImage2Gcode.Properties.Resources.inv2;
+            this.btnInvert.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnInvert.Location = new System.Drawing.Point(141, 16);
+            this.btnInvert.Name = "btnInvert";
+            this.btnInvert.Size = new System.Drawing.Size(28, 28);
+            this.btnInvert.TabIndex = 28;
+            this.btnInvert.UseVisualStyleBackColor = true;
+            this.btnInvert.Click += new System.EventHandler(this.btnInvert_Click);
+            // 
+            // btnRotateLeft
+            // 
+            this.btnRotateLeft.AccessibleDescription = "";
+            this.btnRotateLeft.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.btnRotateLeft.BackgroundImage = global::_3dpBurnerImage2Gcode.Properties.Resources.left;
+            this.btnRotateLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRotateLeft.Location = new System.Drawing.Point(5, 16);
+            this.btnRotateLeft.Name = "btnRotateLeft";
+            this.btnRotateLeft.Size = new System.Drawing.Size(28, 28);
+            this.btnRotateLeft.TabIndex = 27;
+            this.btnRotateLeft.UseVisualStyleBackColor = true;
+            this.btnRotateLeft.Click += new System.EventHandler(this.btnRotateLeft_Click);
+            // 
+            // btnRotateRight
+            // 
+            this.btnRotateRight.BackgroundImage = global::_3dpBurnerImage2Gcode.Properties.Resources.right;
+            this.btnRotateRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRotateRight.Location = new System.Drawing.Point(39, 16);
+            this.btnRotateRight.Name = "btnRotateRight";
+            this.btnRotateRight.Size = new System.Drawing.Size(28, 28);
+            this.btnRotateRight.TabIndex = 26;
+            this.btnRotateRight.UseVisualStyleBackColor = true;
+            this.btnRotateRight.Click += new System.EventHandler(this.btnRotateRight_Click);
+            // 
+            // btnVertMirror
+            // 
+            this.btnVertMirror.BackgroundImage = global::_3dpBurnerImage2Gcode.Properties.Resources.flip_vertical;
+            this.btnVertMirror.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVertMirror.Location = new System.Drawing.Point(107, 16);
+            this.btnVertMirror.Name = "btnVertMirror";
+            this.btnVertMirror.Size = new System.Drawing.Size(28, 28);
+            this.btnVertMirror.TabIndex = 25;
+            this.btnVertMirror.UseVisualStyleBackColor = true;
+            this.btnVertMirror.Click += new System.EventHandler(this.btnVertMirror_Click);
+            // 
+            // btnHorizMirror
+            // 
+            this.btnHorizMirror.BackgroundImage = global::_3dpBurnerImage2Gcode.Properties.Resources.flip_horizontal;
+            this.btnHorizMirror.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnHorizMirror.Location = new System.Drawing.Point(73, 16);
+            this.btnHorizMirror.Name = "btnHorizMirror";
+            this.btnHorizMirror.Size = new System.Drawing.Size(28, 28);
+            this.btnHorizMirror.TabIndex = 24;
+            this.btnHorizMirror.UseVisualStyleBackColor = true;
+            this.btnHorizMirror.Click += new System.EventHandler(this.btnHorizMirror_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label11);
@@ -315,9 +382,9 @@ namespace WindowsFormsApplication1
             this.groupBox1.Controls.Add(this.tbHeight);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.tbWidth);
-            this.groupBox1.Location = new System.Drawing.Point(5, 265);
+            this.groupBox1.Location = new System.Drawing.Point(5, 304);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(183, 100);
+            this.groupBox1.Size = new System.Drawing.Size(183, 67);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output (mm)";
@@ -325,7 +392,7 @@ namespace WindowsFormsApplication1
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(10, 74);
+            this.label11.Location = new System.Drawing.Point(100, 43);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(34, 13);
             this.label11.TabIndex = 25;
@@ -333,7 +400,7 @@ namespace WindowsFormsApplication1
             // 
             // tbRes
             // 
-            this.tbRes.Location = new System.Drawing.Point(56, 71);
+            this.tbRes.Location = new System.Drawing.Point(137, 40);
             this.tbRes.Name = "tbRes";
             this.tbRes.Size = new System.Drawing.Size(34, 20);
             this.tbRes.TabIndex = 24;
@@ -346,7 +413,7 @@ namespace WindowsFormsApplication1
             this.cbLockRatio.AutoSize = true;
             this.cbLockRatio.Checked = true;
             this.cbLockRatio.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbLockRatio.Location = new System.Drawing.Point(99, 33);
+            this.cbLockRatio.Location = new System.Drawing.Point(100, 20);
             this.cbLockRatio.Name = "cbLockRatio";
             this.cbLockRatio.Size = new System.Drawing.Size(82, 17);
             this.cbLockRatio.TabIndex = 23;
@@ -397,7 +464,7 @@ namespace WindowsFormsApplication1
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 162);
+            this.label4.Location = new System.Drawing.Point(10, 152);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 11;
@@ -406,7 +473,7 @@ namespace WindowsFormsApplication1
             // lblGamma
             // 
             this.lblGamma.AutoSize = true;
-            this.lblGamma.Location = new System.Drawing.Point(89, 162);
+            this.lblGamma.Location = new System.Drawing.Point(89, 152);
             this.lblGamma.Name = "lblGamma";
             this.lblGamma.Size = new System.Drawing.Size(13, 13);
             this.lblGamma.TabIndex = 10;
@@ -415,7 +482,7 @@ namespace WindowsFormsApplication1
             // tBarGamma
             // 
             this.tBarGamma.BackColor = System.Drawing.SystemColors.Window;
-            this.tBarGamma.Location = new System.Drawing.Point(6, 176);
+            this.tBarGamma.Location = new System.Drawing.Point(6, 166);
             this.tBarGamma.Maximum = 500;
             this.tBarGamma.Minimum = 1;
             this.tBarGamma.Name = "tBarGamma";
@@ -460,7 +527,7 @@ namespace WindowsFormsApplication1
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 98);
+            this.label1.Location = new System.Drawing.Point(10, 93);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 13);
             this.label1.TabIndex = 5;
@@ -469,7 +536,7 @@ namespace WindowsFormsApplication1
             // lblContrast
             // 
             this.lblContrast.AutoSize = true;
-            this.lblContrast.Location = new System.Drawing.Point(89, 98);
+            this.lblContrast.Location = new System.Drawing.Point(89, 93);
             this.lblContrast.Name = "lblContrast";
             this.lblContrast.Size = new System.Drawing.Size(13, 13);
             this.lblContrast.TabIndex = 4;
@@ -478,7 +545,7 @@ namespace WindowsFormsApplication1
             // tBarContrast
             // 
             this.tBarContrast.BackColor = System.Drawing.SystemColors.Window;
-            this.tBarContrast.Location = new System.Drawing.Point(6, 112);
+            this.tBarContrast.Location = new System.Drawing.Point(6, 107);
             this.tBarContrast.Maximum = 127;
             this.tBarContrast.Minimum = -127;
             this.tBarContrast.Name = "tBarContrast";
@@ -490,13 +557,12 @@ namespace WindowsFormsApplication1
             // 
             // btnCheckOrig
             // 
-            this.btnCheckOrig.Location = new System.Drawing.Point(48, 227);
+            this.btnCheckOrig.Location = new System.Drawing.Point(48, 213);
             this.btnCheckOrig.Name = "btnCheckOrig";
             this.btnCheckOrig.Size = new System.Drawing.Size(108, 23);
             this.btnCheckOrig.TabIndex = 2;
             this.btnCheckOrig.Text = "Check Original";
             this.btnCheckOrig.UseVisualStyleBackColor = true;
-            this.btnCheckOrig.Click += new System.EventHandler(this.btnCheckOrig_Click);
             this.btnCheckOrig.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseDown);
             this.btnCheckOrig.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseUp);
             // 
@@ -571,43 +637,56 @@ namespace WindowsFormsApplication1
             this.textBox1.TabIndex = 13;
             this.textBox1.Text = "0";
             // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileName = "file.nc";
+            this.saveFileDialog1.Filter = "G-Code Files(*.CNC;*.NC;*.TAP;*.TXT)|*.CNC;*.NC;*.TAP;*.TXT|All files (*.*)|*.*";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(400, 400);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(118, 17);
+            this.lblStatus.Text = "toolStripStatusLabel1";
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus});
             this.statusStrip1.Location = new System.Drawing.Point(3, 406);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(601, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(600, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.AutoSize = false;
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(150, 17);
-            this.lblStatus.Text = "toolStripStatusLabel1";
-            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.FileName = "file.nc";
-            this.saveFileDialog1.Filter = "G-Code Files(*.CNC;*.NC;*.TAP;*.TXT)|*.CNC;*.NC;*.TAP;*.TXT|All files (*.*)|*.*";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(607, 431);
-            this.Controls.Add(this.statusStrip1);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(606, 431);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.statusStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(3);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "3dpBurner Image2Gcode";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -616,6 +695,7 @@ namespace WindowsFormsApplication1
             this.groupBox2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tBarGamma)).EndInit();
@@ -624,6 +704,7 @@ namespace WindowsFormsApplication1
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -676,9 +757,15 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnRotateLeft;
+        private System.Windows.Forms.Button btnRotateRight;
+        private System.Windows.Forms.Button btnVertMirror;
+        private System.Windows.Forms.Button btnHorizMirror;
+        private System.Windows.Forms.Button btnInvert;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private System.Windows.Forms.StatusStrip statusStrip1;
     }
 }
 
