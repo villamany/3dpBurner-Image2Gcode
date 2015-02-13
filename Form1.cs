@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 
 namespace WindowsFormsApplication1
@@ -38,21 +39,93 @@ namespace WindowsFormsApplication1
         const string ver = "v0.1development";
         Bitmap originalImage;
         Bitmap adjustedImage;
-        Bitmap backupImage;//for some functions
         float lastValue;//Aux for apply processing to image only when a new value is detected
         public Form1()
         {
             InitializeComponent();
         }
         float ratio; //Used to lock the aspect ratio when the option is selected
-        //Auxiliar function. Adjust brightness contrast and gamma of an image      
-        private void imgBalance(int brigh, int cont, int gam)
+        //Image manipulatios is as follow.
+        
+        //-Open image copy to OriginalImage, apply grayscale and sabe into the same ogiginal image, copy originalImage to adjustedImage and display adjusted image
+        
+        //-Apply resice to original image by user and display
+        //-Aplly Balance= user brighness, contrast and and gamma inputed by user to adjustedImage and display it
+        //-Apply dirthering if selected to adjusted image and display it
+        //The operations as rotate, flip and invert are apllye directly to booth originalImage and adjustedImage
+
+        //Apply dirthering to an image (Convert to 1 bit)
+        private Bitmap imgDirther(Bitmap input)
         {
+            lblStatus.Text = "Dirthering...";
+            Refresh();
+            var masks = new byte[] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+            var output = new Bitmap(input.Width, input.Height, PixelFormat.Format1bppIndexed);
+            var data = new sbyte[input.Width, input.Height];
+            var inputData = input.LockBits(new Rectangle(0, 0, input.Width, input.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            try
+            {
+                var scanLine = inputData.Scan0;
+                var line = new byte[inputData.Stride];
+                for (var y = 0; y < inputData.Height; y++, scanLine += inputData.Stride)
+                {
+                    Marshal.Copy(scanLine, line, 0, line.Length);
+                    for (var x = 0; x < input.Width; x++)
+                    {
+                        data[x, y] = (sbyte)(64 * (GetGreyLevel(line[x * 3 + 2], line[x * 3 + 1], line[x * 3 + 0]) - 0.5));
+                    }
+                }
+            }
+            finally
+            {
+                input.UnlockBits(inputData);
+            }
+            var outputData = output.LockBits(new Rectangle(0, 0, output.Width, output.Height), ImageLockMode.WriteOnly, PixelFormat.Format1bppIndexed);
+            try
+            {
+                var scanLine = outputData.Scan0;
+                for (var y = 0; y < outputData.Height; y++, scanLine += outputData.Stride)
+                {
+                    var line = new byte[outputData.Stride];
+                    for (var x = 0; x < input.Width; x++)
+                    {
+                        var j = data[x, y] > 0;
+                        if (j) line[x / 8] |= masks[x % 8];
+                        var error = (sbyte)(data[x, y] - (j ? 32 : -32));
+                        if (x < input.Width - 1) data[x + 1, y] += (sbyte)(7 * error / 16);
+                        if (y < input.Height - 1)
+                        {
+                            if (x > 0) data[x - 1, y + 1] += (sbyte)(3 * error / 16);
+                            data[x, y + 1] += (sbyte)(5 * error / 16);
+                            if (x < input.Width - 1) data[x + 1, y + 1] += (sbyte)(1 * error / 16);
+                        }
+                    }
+                    Marshal.Copy(line, 0, scanLine, outputData.Stride);
+                }
+            }
+            finally
+            {
+                output.UnlockBits(outputData);
+            }
+            lblStatus.Text = "Done";
+            Refresh();
+            return (output);
+        }
+        private static double GetGreyLevel(byte r, byte g, byte b)//aux for dirthering
+        {
+            return (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+        }
+        //Adjust brightness contrast and gamma of an image      
+        private Bitmap imgBalance(Bitmap img, int brigh, int cont, int gam)
+        {
+            lblStatus.Text = "Balancing...";
+            Refresh();
             ImageAttributes imageAttributes;
             float brightness = (brigh / 100.0f)+ 1.0f; 
             float contrast = (cont / 100.0f) +1.0f; 
             float gamma = 1/(gam / 100.0f) ; 
             float adjustedBrightness = brightness - 1.0f;
+            Bitmap output;
             // create matrix that will brighten and contrast the image
             float[][] ptsArray ={
             new float[] {contrast, 0, 0, 0, 0}, // scale red
@@ -61,27 +134,33 @@ namespace WindowsFormsApplication1
             new float[] {0, 0, 0, 1.0f, 0}, // don't scale alpha
             new float[] {adjustedBrightness, adjustedBrightness, adjustedBrightness, 0, 1}};
 
+            output = new Bitmap(img);
             imageAttributes = new ImageAttributes();
             imageAttributes.ClearColorMatrix();
             imageAttributes.SetColorMatrix(new ColorMatrix(ptsArray), ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
             imageAttributes.SetGamma(gamma, ColorAdjustType.Bitmap);
-            Graphics g = Graphics.FromImage(adjustedImage);
-            g.DrawImage(adjustedImage, new Rectangle(0, 0, adjustedImage.Width, adjustedImage.Height)
-            , 0, 0, adjustedImage.Width, adjustedImage.Height,
+            Graphics g = Graphics.FromImage(output);
+            g.DrawImage(output, new Rectangle(0, 0, output.Width, output.Height)
+            , 0, 0, output.Width, output.Height,
             GraphicsUnit.Pixel, imageAttributes);
+            lblStatus.Text = "Done";
+            Refresh();
+            return (output);
         }    
-        //Auxiliar function. Return a grayscale version of a image
-        private static Bitmap imgGrayscale(Bitmap original)
+        //Return a grayscale version of an image
+        private Bitmap imgGrayscale(Bitmap original)
         {
+            lblStatus.Text = "Grayscaling...";
+            Refresh();
             Bitmap newBitmap = new Bitmap(original.Width, original.Height);//create a blank bitmap the same size as original
             Graphics g = Graphics.FromImage(newBitmap);//get a graphics object from the new image
             //create the grayscale ColorMatrix
             ColorMatrix colorMatrix = new ColorMatrix(
                new float[][] 
                 {
-                    new float[] {.3f, .3f, .3f, 0, 0},
-                    new float[] {.59f, .59f, .59f, 0, 0},
-                    new float[] {.11f, .11f, .11f, 0, 0},
+                    new float[] {.299f, .299f, .299f, 0, 0},
+                    new float[] {.587f, .587f, .587f, 0, 0},
+                    new float[] {.114f, .114f, .114f, 0, 0},
                     new float[] {0, 0, 0, 1, 0},
                     new float[] {0, 0, 0, 0, 1}
                 });
@@ -92,11 +171,15 @@ namespace WindowsFormsApplication1
             g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
             g.Dispose();//dispose the Graphics object
-            return newBitmap;
+            lblStatus.Text = "Done";
+            Refresh();
+            return (newBitmap);
         }
-        //Auxiliar function. Return a inverted colors version of a image
-        private static Bitmap imgInvert(Bitmap original)
+        //Return a inverted colors version of a image
+        private Bitmap imgInvert(Bitmap original)
         {
+            lblStatus.Text = "Inverting...";
+            Refresh();
             Bitmap newBitmap = new Bitmap(original.Width, original.Height);//create a blank bitmap the same size as original
             Graphics g = Graphics.FromImage(newBitmap);//get a graphics object from the new image
             //create the grayscale ColorMatrix
@@ -116,50 +199,54 @@ namespace WindowsFormsApplication1
             g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
             g.Dispose();//dispose the Graphics object
-            return newBitmap;
+            lblStatus.Text = "Done";
+            Refresh();
+            return (newBitmap);
         }
 
-        //Auxiliar function. Resize image to desired width/height for gcode generation
-        //Calculate the needled pixel-sized from uset input widht-height-resolution
-        private void imgResize()
+        //Resize image to desired width/height for gcode generation
+        private Bitmap imgResize(Bitmap input, Int32 xSize, Int32 ySize)
         {
+            //Resize
+            Bitmap output;
+            lblStatus.Text = "Resizing...";
+            Refresh();
+            output= new Bitmap(input,new Size(xSize, ySize));
+            lblStatus.Text = "Done";
+            Refresh();
+            return(output);
+        }
+        //Invoked when the user input any value for image adjust
+        private void userAdjust()
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            //Apply resize to original image
             Int32 xSize;//Total X pixels of resulting image for GCode generation
             Int32 ySize;//Total Y pixels of resulting image for GCode generation
             xSize = Convert.ToInt32(float.Parse(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
             ySize = Convert.ToInt32(float.Parse(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
-            adjustedImage = new Bitmap(adjustedImage, new Size(xSize, ySize));
+            adjustedImage=imgResize(originalImage, xSize, ySize);
+            //Apply balance to adjusted (resized) image
+            adjustedImage = imgBalance(adjustedImage, tBarBrightness.Value, tBarContrast.Value, tBarGamma.Value);
+            //Reset dirthering to adjusted (resized and balanced) image
+            cbDirthering.Text = "GrayScale 8 bit";
+            //Display image
+            pictureBox1.Image = adjustedImage;
         }
         //Display a invalid values message
         private void invalidValue()
         {
             lblStatus.Text = "Invalid values! Check it.";
         }
-        //Apply all corrections to originaImage and save to adjustedImage and display it
-        private void adjustImg()
-        {
-            try
-            {
-                lblStatus.Text = "Processing image...";
-                Refresh();
-                if (!File.Exists(openFileDialog1.FileName)) return;
-                adjustedImage = imgGrayscale(originalImage);
-                imgBalance(tBarBrightness.Value, tBarContrast.Value, tBarGamma.Value);
-                imgResize();
-                lblStatus.Text = "Done";
-            }
-            catch
-            {
-                invalidValue();
-            }
-            pictureBox1.Image = adjustedImage;
-        }
         //OpenFile, save picture grayscaled to originalImage and save the original aspect ratio to ratio
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             try
             {
-                if (openFileDialog1.ShowDialog() == DialogResult.Cancel) return;
+                if (openFileDialog1.ShowDialog() == DialogResult.Cancel) return;//if no image, do nothing
                 if (!File.Exists(openFileDialog1.FileName)) return;
+                lblStatus.Text = "Opening file...";
+                Refresh();
                 tBarBrightness.Value = 0;
                 tBarContrast.Value = 0;
                 tBarGamma.Value = 100;
@@ -167,9 +254,12 @@ namespace WindowsFormsApplication1
                 lblContrast.Text = Convert.ToString(tBarContrast.Value);
                 lblGamma.Text = Convert.ToString(tBarGamma.Value / 100.0f);
                 originalImage = new Bitmap(Image.FromFile(openFileDialog1.FileName));
+                originalImage = imgGrayscale(originalImage);
+                adjustedImage = new Bitmap(originalImage);
                 ratio = (originalImage.Width + 0.0f) / originalImage.Height;//Save ratio for future use if needled
                 if (cbLockRatio.Checked) tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-                adjustImg();
+                userAdjust();
+                lblStatus.Text = "Done";
             }
             catch (Exception err)
             {
@@ -181,24 +271,21 @@ namespace WindowsFormsApplication1
         {
             lblContrast.Text = Convert.ToString(tBarContrast.Value);
             Refresh();
-            if (adjustedImage == null) return;//if no image, do nothing
-            adjustImg();
+            userAdjust(); 
         }
         //Brightness adjusted by user
         private void tBarBrightness_Scroll(object sender, EventArgs e)
         {
             lblBrightness.Text = Convert.ToString(tBarBrightness.Value);
             Refresh();
-            if (adjustedImage == null) return;//if no image, do nothing
-            adjustImg();
+            userAdjust();          
         }
         //Gamma adjusted by user
         private void tBarGamma_Scroll(object sender, EventArgs e)
         {
             lblGamma.Text = Convert.ToString(tBarGamma.Value/100.0f);
             Refresh();
-            if (adjustedImage == null) return;//if no image, do nothing
-            adjustImg();
+            userAdjust(); 
         }
         //Quick preview of the original image. Todo: use a new image container for fas return to processed image
         private void btnCheckOrig_MouseDown(object sender, MouseEventArgs e)
@@ -207,22 +294,22 @@ namespace WindowsFormsApplication1
             if (!File.Exists(openFileDialog1.FileName)) return;
             lblStatus.Text = "Loading original image...";
             Refresh();
-            backupImage = adjustedImage;
-            adjustedImage = imgGrayscale(originalImage);
-            pictureBox1.Image = adjustedImage;
+            pictureBox1.Image = originalImage;
             lblStatus.Text = "Done";
         }
         //Reload the processed image after temporal preiew of the original image
         private void btnCheckOrig_MouseUp(object sender, MouseEventArgs e)
         {
-            if ((backupImage==null)|(adjustedImage==null)) return;//if no image, do nothing
-            adjustedImage = backupImage;
+            if (adjustedImage == null) return;//if no image, do nothing
+            if (!File.Exists(openFileDialog1.FileName)) return;
             pictureBox1.Image = adjustedImage;
         }
         //Resolution changed by user. Update image.
         private void tbRes_TextChanged(object sender, EventArgs e)
         {
-            adjustImg();
+            if (adjustedImage == null) return;//if no image, do nothing
+            userAdjust();
+            cbPreviewZoom_CheckedChanged(this, null);
         }
         //Check if a new image width has been confirmad by user, process it.
         private void widthChangedCheck()
@@ -247,7 +334,7 @@ namespace WindowsFormsApplication1
             {
                 invalidValue();
             }
-            adjustImg();
+            userAdjust();
         }
         //Check if a new image height has been confirmad by user, process it.
         private void heightChangedCheck()
@@ -267,7 +354,7 @@ namespace WindowsFormsApplication1
             {
                 invalidValue();
             }
-            adjustImg();
+            userAdjust();
         }
         //CheckBox lockAspectRatio checked. Set as mandatory the user setted width and calculate the height by using the original aspect ratio
         private void cbLockRatio_CheckedChanged(object sender, EventArgs e)
@@ -275,7 +362,8 @@ namespace WindowsFormsApplication1
             if (cbLockRatio.Checked)
             {
                 tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-                adjustImg();
+                if (adjustedImage == null) return;//if no image, do nothing
+                userAdjust();
             }
         }
         //On form load
@@ -283,6 +371,7 @@ namespace WindowsFormsApplication1
         {
             Text = "3dpBurner Image2Gcode " + ver;
             lblStatus.Text = "Done";
+            cbPreviewZoom_CheckedChanged(this, null);
         }
         //Width confirmed by user by the enter key. Check new value and backup it for compare
         private void tbWidth_KeyPress(object sender, KeyPressEventArgs e)
@@ -290,6 +379,7 @@ namespace WindowsFormsApplication1
             if (e.KeyChar==Convert.ToChar(13))
             {              
                 widthChangedCheck();
+                cbPreviewZoom_CheckedChanged(this, null);
                 lastValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
             }
         }
@@ -299,6 +389,7 @@ namespace WindowsFormsApplication1
             if (e.KeyChar == Convert.ToChar(13))
             {             
                 heightChangedCheck();
+                cbPreviewZoom_CheckedChanged(this, null);
                 lastValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);
             }
         }
@@ -306,11 +397,13 @@ namespace WindowsFormsApplication1
         private void tbWidth_Leave(object sender, EventArgs e)
         {
             widthChangedCheck();
+            cbPreviewZoom_CheckedChanged(this, null);
         }
         //Height control leave focus. Check if new value
         private void tbHeight_Leave(object sender, EventArgs e)
         {
             heightChangedCheck();
+            cbPreviewZoom_CheckedChanged(this, null);
         }
         //Width control get focus. Backup actual value for compare
         private void tbWidth_Enter(object sender, EventArgs e)
@@ -481,41 +574,57 @@ namespace WindowsFormsApplication1
         private void btnHorizMirror_Click(object sender, EventArgs e)
         {
             if (adjustedImage == null) return;//if no image, do nothing
+            lblStatus.Text = "Mirroing...";
+            Refresh();
             adjustedImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
             originalImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
             pictureBox1.Image = adjustedImage;
+            lblStatus.Text = "Done";
         }
         //Vertical mirroing
         private void btnVertMirror_Click(object sender, EventArgs e)
         {
             if (adjustedImage == null) return;//if no image, do nothing
+            lblStatus.Text = "Mirroing...";
+            Refresh();
             adjustedImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
             originalImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
             pictureBox1.Image = adjustedImage;
+            lblStatus.Text = "Done";
         }
         //Rotate right
         private void btnRotateRight_Click(object sender, EventArgs e)
         {
             if (adjustedImage == null) return;//if no image, do nothing
+            lblStatus.Text = "Rotating...";
+            Refresh();
             adjustedImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
             originalImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
             ratio = 1 / ratio;
-            tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-            adjustImg();
-            imgResize();
+            string s = tbHeight.Text;
+            tbHeight.Text = tbWidth.Text;
+            tbWidth.Text = s;
+            //tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
+            //userAdjust();
             pictureBox1.Image = adjustedImage;
+            lblStatus.Text = "Done";
         }
         //Rotate left
         private void btnRotateLeft_Click(object sender, EventArgs e)
         {
             if (adjustedImage == null) return;//if no image, do nothing
+            lblStatus.Text = "Rotating...";
+            Refresh();
             adjustedImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
             originalImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
             ratio = 1 / ratio;
-            tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-            adjustImg();
-            imgResize();
+            string s = tbHeight.Text;
+            tbHeight.Text = tbWidth.Text;
+            tbWidth.Text = s;
+            //tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
+            //userAdjust();
             pictureBox1.Image = adjustedImage;
+            lblStatus.Text = "Done";
         }
         //Invert image color
         private void btnInvert_Click(object sender, EventArgs e)
@@ -523,7 +632,42 @@ namespace WindowsFormsApplication1
             if (adjustedImage == null) return;//if no image, do nothing
             adjustedImage = imgInvert(adjustedImage);
             originalImage= imgInvert(originalImage);
-            pictureBox1.Image = adjustedImage;
+            userAdjust();
+        }
+
+        private void cbDirthering_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (adjustedImage == null) return;//if no image, do nothing
+            if (cbDirthering.Text == "Dirthering FS 1 bit")
+            {
+                lblStatus.Text = "Dirtering...";
+                adjustedImage = imgDirther(adjustedImage);
+                pictureBox1.Image = adjustedImage;
+                lblStatus.Text = "Done";
+            }
+            else
+                userAdjust();
+        }
+        //preview mode normal/autozoom
+        private void cbPreviewZoom_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbPreviewZoom.Checked)
+            {
+                pictureBox1.Width = panel1.Width;
+                pictureBox1.Height = panel1.Height;
+                pictureBox1.Top = 0;
+                pictureBox1.Left = 0;
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+            else
+            {
+                pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+                if (pictureBox1.Width>panel1.Width) pictureBox1.Left=0; else pictureBox1.Left = (panel1.Width / 2) - (pictureBox1.Width / 2);
+                if (pictureBox1.Height>panel1.Height) pictureBox1.Top=0; else pictureBox1.Top = (panel1.Height / 2) - (pictureBox1.Height / 2);
+
+                //pictureBox1.Top = (panel1.Height / 2) - (pictureBox1.Height / 2);
+                //pictureBox1.Left = (panel1.Width / 2) - (pictureBox1.Width / 2);
+            }
         }
 
 
