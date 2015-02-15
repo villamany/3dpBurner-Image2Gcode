@@ -50,12 +50,11 @@ namespace WindowsFormsApplication1
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.cbPreviewZoom = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbEngravingPattern = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblFeedRateUnits = new System.Windows.Forms.Label();
             this.tbFeedRate = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbUseS = new System.Windows.Forms.RadioButton();
@@ -67,9 +66,10 @@ namespace WindowsFormsApplication1
             this.label3 = new System.Windows.Forms.Label();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.tbLaserMax = new System.Windows.Forms.TextBox();
+            this.tbLaserMin = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
@@ -90,7 +90,7 @@ namespace WindowsFormsApplication1
             this.btnRotateRight = new System.Windows.Forms.Button();
             this.btnVertMirror = new System.Windows.Forms.Button();
             this.btnHorizMirror = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gbDimensions = new System.Windows.Forms.GroupBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tbRes = new System.Windows.Forms.TextBox();
             this.cbLockRatio = new System.Windows.Forms.CheckBox();
@@ -99,10 +99,21 @@ namespace WindowsFormsApplication1
             this.label8 = new System.Windows.Forms.Label();
             this.tbWidth = new System.Windows.Forms.TextBox();
             this.btnCheckOrig = new System.Windows.Forms.Button();
-            this.btnOpenFile = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoZoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unitsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.metricmmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imperialinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -115,10 +126,11 @@ namespace WindowsFormsApplication1
             ((System.ComponentModel.ISupportInitialize)(this.tBarBrightness)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBarContrast)).BeginInit();
             this.groupBox4.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.gbDimensions.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -135,38 +147,27 @@ namespace WindowsFormsApplication1
             // lblStatus
             // 
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(118, 17);
+            this.lblStatus.Size = new System.Drawing.Size(118, 15);
             this.lblStatus.Text = "toolStripStatusLabel1";
             // 
             // statusStrip1
             // 
+            this.statusStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(3, 427);
+            this.statusStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+            this.statusStrip1.Location = new System.Drawing.Point(0, 476);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(620, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(649, 20);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // cbPreviewZoom
-            // 
-            this.cbPreviewZoom.AutoSize = true;
-            this.cbPreviewZoom.Checked = true;
-            this.cbPreviewZoom.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbPreviewZoom.Location = new System.Drawing.Point(305, 430);
-            this.cbPreviewZoom.Name = "cbPreviewZoom";
-            this.cbPreviewZoom.Size = new System.Drawing.Size(116, 17);
-            this.cbPreviewZoom.TabIndex = 5;
-            this.cbPreviewZoom.Text = "Preview AutoZoom";
-            this.cbPreviewZoom.UseVisualStyleBackColor = true;
-            this.cbPreviewZoom.CheckedChanged += new System.EventHandler(this.cbPreviewZoom_CheckedChanged);
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Window;
             this.tabPage2.Controls.Add(this.label12);
-            this.tabPage2.Controls.Add(this.comboBox1);
+            this.tabPage2.Controls.Add(this.cbEngravingPattern);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.groupBox2);
             this.tabPage2.Controls.Add(this.cbEdgeLines);
@@ -178,7 +179,7 @@ namespace WindowsFormsApplication1
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(191, 508);
+            this.tabPage2.Size = new System.Drawing.Size(191, 422);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "GCODE";
             // 
@@ -191,44 +192,46 @@ namespace WindowsFormsApplication1
             this.label12.TabIndex = 20;
             this.label12.Text = "Engraving pattern";
             // 
-            // comboBox1
+            // cbEngravingPattern
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Horizontal"});
-            this.comboBox1.Location = new System.Drawing.Point(1, 332);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(187, 21);
-            this.comboBox1.TabIndex = 19;
-            this.comboBox1.Text = "Horizontal scanning";
+            this.cbEngravingPattern.FormattingEnabled = true;
+            this.cbEngravingPattern.Items.AddRange(new object[] {
+            "Horizontal scanning",
+            "Diagonal scanning"});
+            this.cbEngravingPattern.Location = new System.Drawing.Point(1, 332);
+            this.cbEngravingPattern.Name = "cbEngravingPattern";
+            this.cbEngravingPattern.Size = new System.Drawing.Size(187, 21);
+            this.cbEngravingPattern.TabIndex = 4;
+            this.cbEngravingPattern.Text = "Horizontal scanning";
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.lblFeedRateUnits);
             this.groupBox3.Controls.Add(this.tbFeedRate);
             this.groupBox3.Location = new System.Drawing.Point(1, 210);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(187, 56);
-            this.groupBox3.TabIndex = 18;
+            this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Feedrate";
             // 
-            // label10
+            // lblFeedRateUnits
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(53, 26);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(44, 13);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "mm/min";
+            this.lblFeedRateUnits.AutoSize = true;
+            this.lblFeedRateUnits.Location = new System.Drawing.Point(53, 26);
+            this.lblFeedRateUnits.Name = "lblFeedRateUnits";
+            this.lblFeedRateUnits.Size = new System.Drawing.Size(44, 13);
+            this.lblFeedRateUnits.TabIndex = 19;
+            this.lblFeedRateUnits.Text = "mm/min";
             // 
             // tbFeedRate
             // 
             this.tbFeedRate.Location = new System.Drawing.Point(11, 23);
             this.tbFeedRate.Name = "tbFeedRate";
             this.tbFeedRate.Size = new System.Drawing.Size(36, 20);
-            this.tbFeedRate.TabIndex = 18;
+            this.tbFeedRate.TabIndex = 2;
             this.tbFeedRate.Text = "1000";
+            this.tbFeedRate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbFeedRate_KeyPress);
             // 
             // groupBox2
             // 
@@ -237,7 +240,7 @@ namespace WindowsFormsApplication1
             this.groupBox2.Location = new System.Drawing.Point(1, 269);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(187, 41);
-            this.groupBox2.TabIndex = 16;
+            this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Laser power command";
             // 
@@ -248,7 +251,7 @@ namespace WindowsFormsApplication1
             this.rbUseS.Location = new System.Drawing.Point(21, 16);
             this.rbUseS.Name = "rbUseS";
             this.rbUseS.Size = new System.Drawing.Size(58, 17);
-            this.rbUseS.TabIndex = 10;
+            this.rbUseS.TabIndex = 2;
             this.rbUseS.TabStop = true;
             this.rbUseS.Text = "Use \'S\'";
             this.rbUseS.UseVisualStyleBackColor = true;
@@ -259,7 +262,7 @@ namespace WindowsFormsApplication1
             this.rbUseZ.Location = new System.Drawing.Point(117, 16);
             this.rbUseZ.Name = "rbUseZ";
             this.rbUseZ.Size = new System.Drawing.Size(58, 17);
-            this.rbUseZ.TabIndex = 9;
+            this.rbUseZ.TabIndex = 2;
             this.rbUseZ.Text = "Use \'Z\'";
             this.rbUseZ.UseVisualStyleBackColor = true;
             // 
@@ -271,7 +274,7 @@ namespace WindowsFormsApplication1
             this.cbEdgeLines.Location = new System.Drawing.Point(39, 361);
             this.cbEdgeLines.Name = "cbEdgeLines";
             this.cbEdgeLines.Size = new System.Drawing.Size(112, 17);
-            this.cbEdgeLines.TabIndex = 15;
+            this.cbEdgeLines.TabIndex = 5;
             this.cbEdgeLines.Text = "Engrave edge line";
             this.cbEdgeLines.UseVisualStyleBackColor = true;
             // 
@@ -290,7 +293,7 @@ namespace WindowsFormsApplication1
             this.rtbPostGcode.Location = new System.Drawing.Point(1, 121);
             this.rtbPostGcode.Name = "rtbPostGcode";
             this.rtbPostGcode.Size = new System.Drawing.Size(187, 83);
-            this.rtbPostGcode.TabIndex = 3;
+            this.rtbPostGcode.TabIndex = 1;
             this.rtbPostGcode.Text = "(Footer)\nG0 X0 Y0\n(Footer end)";
             this.rtbPostGcode.WordWrap = false;
             // 
@@ -299,8 +302,8 @@ namespace WindowsFormsApplication1
             this.rtbPreGcode.Location = new System.Drawing.Point(1, 20);
             this.rtbPreGcode.Name = "rtbPreGcode";
             this.rtbPreGcode.Size = new System.Drawing.Size(187, 83);
-            this.rtbPreGcode.TabIndex = 1;
-            this.rtbPreGcode.Text = "(Header)\n(Generated by 3dpBurner Image2Gcode)\nM5\n(Header end)";
+            this.rtbPreGcode.TabIndex = 0;
+            this.rtbPreGcode.Text = "(Header)\nG0 X0 Y0\n(Header end)";
             this.rtbPreGcode.WordWrap = false;
             // 
             // label3
@@ -317,60 +320,70 @@ namespace WindowsFormsApplication1
             this.btnGenerate.Location = new System.Drawing.Point(30, 386);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(133, 23);
-            this.btnGenerate.TabIndex = 0;
+            this.btnGenerate.TabIndex = 6;
             this.btnGenerate.Text = "Generate file...";
             this.btnGenerate.UseVisualStyleBackColor = true;
             this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label10);
+            this.tabPage3.Controls.Add(this.tbLaserMax);
+            this.tabPage3.Controls.Add(this.tbLaserMin);
             this.tabPage3.Controls.Add(this.label7);
-            this.tabPage3.Controls.Add(this.textBox2);
-            this.tabPage3.Controls.Add(this.textBox1);
             this.tabPage3.Controls.Add(this.label6);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(191, 508);
+            this.tabPage3.Size = new System.Drawing.Size(191, 422);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Laser profile";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(3, 130);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(184, 66);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "GrayScale values (0-255) will be interpolated between Min and Max Power Values.";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // tbLaserMax
+            // 
+            this.tbLaserMax.Location = new System.Drawing.Point(6, 84);
+            this.tbLaserMax.Name = "tbLaserMax";
+            this.tbLaserMax.Size = new System.Drawing.Size(37, 20);
+            this.tbLaserMax.TabIndex = 29;
+            this.tbLaserMax.Text = "255";
+            this.tbLaserMax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbLaserMax_KeyPress);
+            // 
+            // tbLaserMin
+            // 
+            this.tbLaserMin.Location = new System.Drawing.Point(8, 34);
+            this.tbLaserMin.Name = "tbLaserMin";
+            this.tbLaserMin.Size = new System.Drawing.Size(35, 20);
+            this.tbLaserMin.TabIndex = 28;
+            this.tbLaserMin.Text = "0";
+            this.tbLaserMin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbLaserMin_KeyPress);
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(5, 61);
+            this.label7.Location = new System.Drawing.Point(6, 68);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(92, 13);
+            this.label7.Size = new System.Drawing.Size(60, 13);
             this.label7.TabIndex = 16;
-            this.label7.Text = "Max Power (toDo)";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(7, 76);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(52, 20);
-            this.textBox2.TabIndex = 15;
-            this.textBox2.Text = "255";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(6, 33);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(52, 20);
-            this.textBox1.TabIndex = 13;
-            this.textBox1.Text = "0";
+            this.label7.Text = "Max Power";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(3, 18);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(89, 13);
+            this.label6.Size = new System.Drawing.Size(57, 13);
             this.label6.TabIndex = 14;
-            this.label6.Text = "Min Power (toDo)";
+            this.label6.Text = "Min Power";
             // 
             // tabPage1
             // 
@@ -378,20 +391,19 @@ namespace WindowsFormsApplication1
             this.tabPage1.Controls.Add(this.groupBox6);
             this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox4);
-            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.gbDimensions);
             this.tabPage1.Controls.Add(this.btnCheckOrig);
-            this.tabPage1.Controls.Add(this.btnOpenFile);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(191, 508);
+            this.tabPage1.Size = new System.Drawing.Size(191, 422);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Image";
             // 
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.cbDirthering);
-            this.groupBox6.Location = new System.Drawing.Point(1, 372);
+            this.groupBox6.Location = new System.Drawing.Point(1, 368);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(187, 48);
             this.groupBox6.TabIndex = 27;
@@ -404,10 +416,10 @@ namespace WindowsFormsApplication1
             this.cbDirthering.Items.AddRange(new object[] {
             "GrayScale 8 bit",
             "Dirthering FS 1 bit"});
-            this.cbDirthering.Location = new System.Drawing.Point(9, 19);
+            this.cbDirthering.Location = new System.Drawing.Point(9, 17);
             this.cbDirthering.Name = "cbDirthering";
             this.cbDirthering.Size = new System.Drawing.Size(169, 21);
-            this.cbDirthering.TabIndex = 26;
+            this.cbDirthering.TabIndex = 14;
             this.cbDirthering.Text = "GrayScale 8 bit";
             this.cbDirthering.SelectedIndexChanged += new System.EventHandler(this.cbDirthering_SelectedIndexChanged);
             // 
@@ -425,7 +437,7 @@ namespace WindowsFormsApplication1
             this.groupBox5.Location = new System.Drawing.Point(1, 30);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(187, 218);
-            this.groupBox5.TabIndex = 26;
+            this.groupBox5.TabIndex = 3;
             this.groupBox5.TabStop = false;
             // 
             // lblGamma
@@ -445,7 +457,7 @@ namespace WindowsFormsApplication1
             this.tBarGamma.Minimum = 1;
             this.tBarGamma.Name = "tBarGamma";
             this.tBarGamma.Size = new System.Drawing.Size(181, 45);
-            this.tBarGamma.TabIndex = 18;
+            this.tBarGamma.TabIndex = 2;
             this.tBarGamma.TickFrequency = 22;
             this.tBarGamma.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.tBarGamma.Value = 50;
@@ -468,7 +480,7 @@ namespace WindowsFormsApplication1
             this.tBarBrightness.Minimum = -127;
             this.tBarBrightness.Name = "tBarBrightness";
             this.tBarBrightness.Size = new System.Drawing.Size(181, 45);
-            this.tBarBrightness.TabIndex = 15;
+            this.tBarBrightness.TabIndex = 0;
             this.tBarBrightness.TickFrequency = 10;
             this.tBarBrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.tBarBrightness.Scroll += new System.EventHandler(this.tBarBrightness_Scroll);
@@ -490,7 +502,7 @@ namespace WindowsFormsApplication1
             this.tBarContrast.Minimum = -127;
             this.tBarContrast.Name = "tBarContrast";
             this.tBarContrast.Size = new System.Drawing.Size(181, 45);
-            this.tBarContrast.TabIndex = 12;
+            this.tBarContrast.TabIndex = 1;
             this.tBarContrast.TickFrequency = 10;
             this.tBarContrast.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.tBarContrast.Scroll += new System.EventHandler(this.tBarContrast_Scroll);
@@ -532,7 +544,7 @@ namespace WindowsFormsApplication1
             this.groupBox4.Location = new System.Drawing.Point(1, 244);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(187, 54);
-            this.groupBox4.TabIndex = 24;
+            this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
             // 
             // btnInvert
@@ -542,7 +554,7 @@ namespace WindowsFormsApplication1
             this.btnInvert.Location = new System.Drawing.Point(151, 16);
             this.btnInvert.Name = "btnInvert";
             this.btnInvert.Size = new System.Drawing.Size(28, 28);
-            this.btnInvert.TabIndex = 28;
+            this.btnInvert.TabIndex = 9;
             this.btnInvert.UseVisualStyleBackColor = true;
             this.btnInvert.Click += new System.EventHandler(this.btnInvert_Click);
             // 
@@ -555,7 +567,7 @@ namespace WindowsFormsApplication1
             this.btnRotateLeft.Location = new System.Drawing.Point(7, 16);
             this.btnRotateLeft.Name = "btnRotateLeft";
             this.btnRotateLeft.Size = new System.Drawing.Size(28, 28);
-            this.btnRotateLeft.TabIndex = 27;
+            this.btnRotateLeft.TabIndex = 5;
             this.btnRotateLeft.UseVisualStyleBackColor = true;
             this.btnRotateLeft.Click += new System.EventHandler(this.btnRotateLeft_Click);
             // 
@@ -566,7 +578,7 @@ namespace WindowsFormsApplication1
             this.btnRotateRight.Location = new System.Drawing.Point(43, 16);
             this.btnRotateRight.Name = "btnRotateRight";
             this.btnRotateRight.Size = new System.Drawing.Size(28, 28);
-            this.btnRotateRight.TabIndex = 26;
+            this.btnRotateRight.TabIndex = 6;
             this.btnRotateRight.UseVisualStyleBackColor = true;
             this.btnRotateRight.Click += new System.EventHandler(this.btnRotateRight_Click);
             // 
@@ -577,7 +589,7 @@ namespace WindowsFormsApplication1
             this.btnVertMirror.Location = new System.Drawing.Point(115, 16);
             this.btnVertMirror.Name = "btnVertMirror";
             this.btnVertMirror.Size = new System.Drawing.Size(28, 28);
-            this.btnVertMirror.TabIndex = 25;
+            this.btnVertMirror.TabIndex = 8;
             this.btnVertMirror.UseVisualStyleBackColor = true;
             this.btnVertMirror.Click += new System.EventHandler(this.btnVertMirror_Click);
             // 
@@ -588,25 +600,25 @@ namespace WindowsFormsApplication1
             this.btnHorizMirror.Location = new System.Drawing.Point(79, 16);
             this.btnHorizMirror.Name = "btnHorizMirror";
             this.btnHorizMirror.Size = new System.Drawing.Size(28, 28);
-            this.btnHorizMirror.TabIndex = 24;
+            this.btnHorizMirror.TabIndex = 7;
             this.btnHorizMirror.UseVisualStyleBackColor = true;
             this.btnHorizMirror.Click += new System.EventHandler(this.btnHorizMirror_Click);
             // 
-            // groupBox1
+            // gbDimensions
             // 
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.tbRes);
-            this.groupBox1.Controls.Add(this.cbLockRatio);
-            this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.tbHeight);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.tbWidth);
-            this.groupBox1.Location = new System.Drawing.Point(1, 301);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(187, 67);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Output (mm)";
+            this.gbDimensions.Controls.Add(this.label11);
+            this.gbDimensions.Controls.Add(this.tbRes);
+            this.gbDimensions.Controls.Add(this.cbLockRatio);
+            this.gbDimensions.Controls.Add(this.label9);
+            this.gbDimensions.Controls.Add(this.tbHeight);
+            this.gbDimensions.Controls.Add(this.label8);
+            this.gbDimensions.Controls.Add(this.tbWidth);
+            this.gbDimensions.Location = new System.Drawing.Point(1, 299);
+            this.gbDimensions.Name = "gbDimensions";
+            this.gbDimensions.Size = new System.Drawing.Size(187, 67);
+            this.gbDimensions.TabIndex = 5;
+            this.gbDimensions.TabStop = false;
+            this.gbDimensions.Text = "Output (mm)";
             // 
             // label11
             // 
@@ -622,10 +634,11 @@ namespace WindowsFormsApplication1
             this.tbRes.Location = new System.Drawing.Point(137, 40);
             this.tbRes.Name = "tbRes";
             this.tbRes.Size = new System.Drawing.Size(34, 20);
-            this.tbRes.TabIndex = 24;
+            this.tbRes.TabIndex = 12;
             this.tbRes.Text = "0.18";
-            this.tbRes.TextChanged += new System.EventHandler(this.tbRes_TextChanged);
             this.tbRes.Enter += new System.EventHandler(this.tbRes_Enter);
+            this.tbRes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbRes_KeyPress);
+            this.tbRes.Leave += new System.EventHandler(this.tbRes_Leave);
             // 
             // cbLockRatio
             // 
@@ -635,7 +648,7 @@ namespace WindowsFormsApplication1
             this.cbLockRatio.Location = new System.Drawing.Point(100, 20);
             this.cbLockRatio.Name = "cbLockRatio";
             this.cbLockRatio.Size = new System.Drawing.Size(82, 17);
-            this.cbLockRatio.TabIndex = 23;
+            this.cbLockRatio.TabIndex = 13;
             this.cbLockRatio.Text = "Aspect ratio";
             this.cbLockRatio.UseVisualStyleBackColor = true;
             this.cbLockRatio.CheckedChanged += new System.EventHandler(this.cbLockRatio_CheckedChanged);
@@ -654,7 +667,7 @@ namespace WindowsFormsApplication1
             this.tbHeight.Location = new System.Drawing.Point(56, 40);
             this.tbHeight.Name = "tbHeight";
             this.tbHeight.Size = new System.Drawing.Size(36, 20);
-            this.tbHeight.TabIndex = 21;
+            this.tbHeight.TabIndex = 11;
             this.tbHeight.Text = "100";
             this.tbHeight.Enter += new System.EventHandler(this.tbHeight_Enter);
             this.tbHeight.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbHeight_KeyPress);
@@ -674,7 +687,7 @@ namespace WindowsFormsApplication1
             this.tbWidth.Location = new System.Drawing.Point(56, 19);
             this.tbWidth.Name = "tbWidth";
             this.tbWidth.Size = new System.Drawing.Size(36, 20);
-            this.tbWidth.TabIndex = 19;
+            this.tbWidth.TabIndex = 10;
             this.tbWidth.Text = "60";
             this.tbWidth.Enter += new System.EventHandler(this.tbWidth_Enter);
             this.tbWidth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbWidth_KeyPress);
@@ -682,73 +695,164 @@ namespace WindowsFormsApplication1
             // 
             // btnCheckOrig
             // 
-            this.btnCheckOrig.Location = new System.Drawing.Point(93, 6);
+            this.btnCheckOrig.Location = new System.Drawing.Point(51, 6);
             this.btnCheckOrig.Name = "btnCheckOrig";
             this.btnCheckOrig.Size = new System.Drawing.Size(93, 23);
-            this.btnCheckOrig.TabIndex = 2;
+            this.btnCheckOrig.TabIndex = 1;
             this.btnCheckOrig.Text = "Check Original";
             this.btnCheckOrig.UseVisualStyleBackColor = true;
             this.btnCheckOrig.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseDown);
             this.btnCheckOrig.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnCheckOrig_MouseUp);
-            // 
-            // btnOpenFile
-            // 
-            this.btnOpenFile.Location = new System.Drawing.Point(6, 6);
-            this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(75, 23);
-            this.btnOpenFile.TabIndex = 0;
-            this.btnOpenFile.Text = "File...";
-            this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(427, 3);
+            this.tabControl1.Location = new System.Drawing.Point(452, 26);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(199, 534);
-            this.tabControl1.TabIndex = 1;
+            this.tabControl1.Size = new System.Drawing.Size(199, 448);
+            this.tabControl1.TabIndex = 3;
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.panel1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Location = new System.Drawing.Point(1, 1);
+            this.panel1.Location = new System.Drawing.Point(1, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(425, 425);
+            this.panel1.Size = new System.Drawing.Size(450, 450);
             this.panel1.TabIndex = 6;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.pictureBox1.Location = new System.Drawing.Point(1, 1);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(425, 425);
+            this.pictureBox1.Size = new System.Drawing.Size(450, 450);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem,
+            this.unitsToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(649, 24);
+            this.menuStrip1.TabIndex = 9;
+            this.menuStrip1.Text = "menuStrip2";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.openToolStripMenuItem.Text = "Open...";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(109, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoZoomToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // autoZoomToolStripMenuItem
+            // 
+            this.autoZoomToolStripMenuItem.Checked = true;
+            this.autoZoomToolStripMenuItem.CheckOnClick = true;
+            this.autoZoomToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoZoomToolStripMenuItem.Name = "autoZoomToolStripMenuItem";
+            this.autoZoomToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.autoZoomToolStripMenuItem.Text = "Preview AutoZoom";
+            this.autoZoomToolStripMenuItem.Click += new System.EventHandler(this.autoZoomToolStripMenuItem_Click);
+            // 
+            // unitsToolStripMenuItem
+            // 
+            this.unitsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.metricmmToolStripMenuItem,
+            this.imperialinToolStripMenuItem});
+            this.unitsToolStripMenuItem.Name = "unitsToolStripMenuItem";
+            this.unitsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.unitsToolStripMenuItem.Text = "Units";
+            // 
+            // metricmmToolStripMenuItem
+            // 
+            this.metricmmToolStripMenuItem.Checked = true;
+            this.metricmmToolStripMenuItem.CheckOnClick = true;
+            this.metricmmToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.metricmmToolStripMenuItem.Name = "metricmmToolStripMenuItem";
+            this.metricmmToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.metricmmToolStripMenuItem.Text = "Metric (mm)";
+            this.metricmmToolStripMenuItem.Click += new System.EventHandler(this.metricmmToolStripMenuItem_Click);
+            // 
+            // imperialinToolStripMenuItem
+            // 
+            this.imperialinToolStripMenuItem.CheckOnClick = true;
+            this.imperialinToolStripMenuItem.Name = "imperialinToolStripMenuItem";
+            this.imperialinToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.imperialinToolStripMenuItem.Text = "Imperial (in)";
+            this.imperialinToolStripMenuItem.Click += new System.EventHandler(this.imperialinToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem1});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutToolStripMenuItem1
+            // 
+            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem1.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(626, 452);
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.ClientSize = new System.Drawing.Size(649, 496);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.cbPreviewZoom);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Padding = new System.Windows.Forms.Padding(3);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "3dpBurner Image2Gcode";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -770,12 +874,14 @@ namespace WindowsFormsApplication1
             ((System.ComponentModel.ISupportInitialize)(this.tBarBrightness)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tBarContrast)).EndInit();
             this.groupBox4.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbDimensions.ResumeLayout(false);
+            this.gbDimensions.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -787,12 +893,11 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.CheckBox cbPreviewZoom;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbEngravingPattern;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label lblFeedRateUnits;
         private System.Windows.Forms.TextBox tbFeedRate;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rbUseS;
@@ -805,8 +910,6 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.GroupBox groupBox6;
@@ -827,7 +930,7 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Button btnRotateRight;
         private System.Windows.Forms.Button btnVertMirror;
         private System.Windows.Forms.Button btnHorizMirror;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gbDimensions;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tbRes;
         private System.Windows.Forms.CheckBox cbLockRatio;
@@ -836,10 +939,24 @@ namespace WindowsFormsApplication1
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox tbWidth;
         private System.Windows.Forms.Button btnCheckOrig;
-        private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TextBox tbLaserMin;
+        private System.Windows.Forms.TextBox tbLaserMax;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem unitsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem metricmmToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem imperialinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoZoomToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.Label label10;
     }
 }
 

@@ -1,4 +1,10 @@
 ﻿/*Changelog since last commit:
+ * Bug fix ("Use Z" as power command produced wrong lines)
+ * Some other minor bugs fix
+ * Added diagonal Gcode generation mode
+ * Added imperial/metric units
+ * Added about dialog
+ * Some gui improvements
 
 /*  3dpBurner Image2Gcode. A Image to GCODE converter for GRBL based devices.
     This file is part of 3dpBurner Image2Gcode application.
@@ -53,7 +59,35 @@ namespace WindowsFormsApplication1
         //-Aplly Balance= user brighness, contrast and and gamma inputed by user to adjustedImage and display it
         //-Apply dirthering if selected to adjusted image and display it
         //The operations as rotate, flip and invert are apllye directly to booth originalImage and adjustedImage
+        
+        //Interpolate a 8 bit grayscale value (0-255) between min,max
+        private Int32 interpolate(Int32 grayValue, Int32 min, Int32 max)
+        {
+            Int32 dif=max-min;
+            return (min + ((grayValue * dif) / 255));
+        }
 
+        //Return true if char is a valid float digit, show eror message is not and return false
+        private bool checkDigitFloat(char ch )
+        {
+            if ((ch != '.') & (ch != '0') & (ch != '1') & (ch != '2') & (ch != '3') & (ch != '4') & (ch != '5') & (ch != '6') & (ch != '7') & (ch != '8') & (ch != '9') & (Convert.ToByte(ch) != 8) & (Convert.ToByte(ch) != 13))//is a 0-9 numbre or . decimal separator, backspace or enter
+            {
+                MessageBox.Show("Allowed chars are '0'-'9' and '.' as decimal separator", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+        //Return true if char is a valid integer digit, show eror message is not and return false
+        private bool checkDigitInteger(char ch)
+        {
+            if ((ch != '0') & (ch != '1') & (ch != '2') & (ch != '3') & (ch != '4') & (ch != '5') & (ch != '6') & (ch != '7') & (ch != '8') & (ch != '9') & (Convert.ToByte(ch) != 8) & (Convert.ToByte(ch) != 13))//is a 0-9 numbre or . decimal separator, backspace or enter
+            {
+                MessageBox.Show("Allowed chars are '0'-'9'", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+              
         //Apply dirthering to an image (Convert to 1 bit)
         private Bitmap imgDirther(Bitmap input)
         {
@@ -219,54 +253,35 @@ namespace WindowsFormsApplication1
         //Invoked when the user input any value for image adjust
         private void userAdjust()
         {
-            if (adjustedImage == null) return;//if no image, do nothing
-            //Apply resize to original image
-            Int32 xSize;//Total X pixels of resulting image for GCode generation
-            Int32 ySize;//Total Y pixels of resulting image for GCode generation
-            xSize = Convert.ToInt32(float.Parse(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
-            ySize = Convert.ToInt32(float.Parse(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
-            adjustedImage=imgResize(originalImage, xSize, ySize);
-            //Apply balance to adjusted (resized) image
-            adjustedImage = imgBalance(adjustedImage, tBarBrightness.Value, tBarContrast.Value, tBarGamma.Value);
-            //Reset dirthering to adjusted (resized and balanced) image
-            cbDirthering.Text = "GrayScale 8 bit";
-            //Display image
-            pictureBox1.Image = adjustedImage;
+            try
+            {
+                if (adjustedImage == null) return;//if no image, do nothing
+                //Apply resize to original image
+                Int32 xSize;//Total X pixels of resulting image for GCode generation
+                Int32 ySize;//Total Y pixels of resulting image for GCode generation
+                xSize = Convert.ToInt32(float.Parse(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
+                ySize = Convert.ToInt32(float.Parse(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat) / float.Parse(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
+                adjustedImage = imgResize(originalImage, xSize, ySize);
+                //Apply balance to adjusted (resized) image
+                adjustedImage = imgBalance(adjustedImage, tBarBrightness.Value, tBarContrast.Value, tBarGamma.Value);
+                //Reset dirthering to adjusted (resized and balanced) image
+                cbDirthering.Text = "GrayScale 8 bit";
+                //Display image
+                pictureBox1.Image = adjustedImage;
+                //Set preview
+                autoZoomToolStripMenuItem_Click(this, null);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error resizing/balancing image: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         //Display a invalid values message
         private void invalidValue()
         {
             lblStatus.Text = "Invalid values! Check it.";
         }
-        //OpenFile, save picture grayscaled to originalImage and save the original aspect ratio to ratio
-        private void btnOpenFile_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (openFileDialog1.ShowDialog() == DialogResult.Cancel) return;//if no image, do nothing
-                if (!File.Exists(openFileDialog1.FileName)) return;
-                lblStatus.Text = "Opening file...";
-                Refresh();
-                tBarBrightness.Value = 0;
-                tBarContrast.Value = 0;
-                tBarGamma.Value = 100;
-                lblBrightness.Text = Convert.ToString(tBarBrightness.Value);
-                lblContrast.Text = Convert.ToString(tBarContrast.Value);
-                lblGamma.Text = Convert.ToString(tBarGamma.Value / 100.0f);
-                originalImage = new Bitmap(Image.FromFile(openFileDialog1.FileName));
-                originalImage = imgGrayscale(originalImage);
-                adjustedImage = new Bitmap(originalImage);
-                ratio = (originalImage.Width + 0.0f) / originalImage.Height;//Save ratio for future use if needled
-                if (cbLockRatio.Checked) tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-                userAdjust();
-                lblStatus.Text = "Done";
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show("Error opening file: "+err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        //Contrast adjusted by user
+         //Contrast adjusted by user
         private void tBarContrast_Scroll(object sender, EventArgs e)
         {
             lblContrast.Text = Convert.ToString(tBarContrast.Value);
@@ -304,57 +319,60 @@ namespace WindowsFormsApplication1
             if (!File.Exists(openFileDialog1.FileName)) return;
             pictureBox1.Image = adjustedImage;
         }
-        //Resolution changed by user. Update image.
-        private void tbRes_TextChanged(object sender, EventArgs e)
-        {
-            if (adjustedImage == null) return;//if no image, do nothing
-            userAdjust();
-            cbPreviewZoom_CheckedChanged(this, null);
-        }
+
         //Check if a new image width has been confirmad by user, process it.
         private void widthChangedCheck()
         {
-            if (adjustedImage == null) return;//if no image, do nothing
-            //Get the user input value
-            float newValue=Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);           
-            newValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
-
-            if (newValue == lastValue) return;//if not is a new value do nothing
-     
-            lastValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
-
             try
             {
+                if (adjustedImage == null) return;//if no image, do nothing
+                float newValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);//Get the user input value           
+                if (newValue == lastValue) return;//if not is a new value do nothing     
+                lastValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
                 if (cbLockRatio.Checked)
                 {
                     tbHeight.Text = Convert.ToString((newValue / ratio), CultureInfo.InvariantCulture.NumberFormat);
                 }
+                userAdjust();
             }
-            catch
+            catch 
             {
-                invalidValue();
+                MessageBox.Show("Check width value.", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            userAdjust();
         }
         //Check if a new image height has been confirmad by user, process it.
         private void heightChangedCheck()
         {
-            //Get the user input value
-            if (adjustedImage == null) return;//if no image, do nothing
-            float newValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);   
-            if (newValue == lastValue) return;//if not is a new value do nothing
             try
             {
+                if (adjustedImage == null) return;//if no image, do nothing
+                float newValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);//Get the user input value   
+                if (newValue == lastValue) return;//if not is a new value do nothing
+                lastValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);
                 if (cbLockRatio.Checked)
                 {
                     tbWidth.Text = Convert.ToString((newValue * ratio), CultureInfo.InvariantCulture.NumberFormat);
                 }
+                userAdjust();
             }
-            catch
+            catch {
+                MessageBox.Show("Check height value.", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        //Check if a new image resolution has been confirmad by user, process it.
+        private void resolutionChangedCheck()
+        {
+            try
             {
-                invalidValue();
+                if (adjustedImage == null) return;//if no image, do nothing
+                float newValue = Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);//Get the user input value
+                if (newValue == lastValue) return;//if not is a new value do nothing
+                lastValue = Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);
+                userAdjust();
             }
-            userAdjust();
+            catch {
+                MessageBox.Show("Check resolution value.", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         //CheckBox lockAspectRatio checked. Set as mandatory the user setted width and calculate the height by using the original aspect ratio
         private void cbLockRatio_CheckedChanged(object sender, EventArgs e)
@@ -371,54 +389,92 @@ namespace WindowsFormsApplication1
         {
             Text = "3dpBurner Image2Gcode " + ver;
             lblStatus.Text = "Done";
-            cbPreviewZoom_CheckedChanged(this, null);
+            autoZoomToolStripMenuItem_Click(this, null);//Set preview zoom mode
         }
-        //Width confirmed by user by the enter key. Check new value and backup it for compare
+        //Width confirmed by user by the enter key
         private void tbWidth_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //Prevent any not allowed char
+            if (!checkDigitFloat(e.KeyChar))
+            {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
+
             if (e.KeyChar==Convert.ToChar(13))
             {              
                 widthChangedCheck();
-                cbPreviewZoom_CheckedChanged(this, null);
-                lastValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
             }
         }
-        //Height confirmed by user by the enter key. Check new value and backup it for compare
+        //Height confirmed by user by the enter key
         private void tbHeight_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //Prevent any not allowed char
+            if (!checkDigitFloat(e.KeyChar))
+            {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
             if (e.KeyChar == Convert.ToChar(13))
             {             
                 heightChangedCheck();
-                cbPreviewZoom_CheckedChanged(this, null);
-                lastValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);
+            }
+        }
+        //Resolution confirmed by user by the enter key
+        private void tbRes_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Prevent any not allowed char
+            if (!checkDigitFloat(e.KeyChar))
+            {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
+            if (e.KeyChar == Convert.ToChar(13))
+            {
+                resolutionChangedCheck();
             }
         }
         //Width control leave focus. Check if new value
         private void tbWidth_Leave(object sender, EventArgs e)
         {
             widthChangedCheck();
-            cbPreviewZoom_CheckedChanged(this, null);
         }
         //Height control leave focus. Check if new value
         private void tbHeight_Leave(object sender, EventArgs e)
         {
             heightChangedCheck();
-            cbPreviewZoom_CheckedChanged(this, null);
         }
-        //Width control get focus. Backup actual value for compare
+        //Resolution control leave focus. Check if new value
+        private void tbRes_Leave(object sender, EventArgs e)
+        {
+            resolutionChangedCheck();
+        }
+        //Width control get focusv
         private void tbWidth_Enter(object sender, EventArgs e)
         {
-            lastValue=Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
+            try
+            {
+                lastValue = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);
+            }
+            catch { }
         }
-        //Height control get focus. Backup actual value for compare
+        //Height control get focus. Backup actual value for check changes.
         private void tbHeight_Enter(object sender, EventArgs e)
         {
-            lastValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);
+            try
+            {
+                lastValue = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);
+            }
+            catch { }
         }
-        //Resolution control get focus. Backup actual value for compare
+        //Resolution control get focus. Backup actual value for check changes.
         private void tbRes_Enter(object sender, EventArgs e)
         {
-            lastValue = Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);
+            try
+            {
+                lastValue = Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);
+            }
+            catch { }
         }
         //Generate a "minimalist" gcode line based on the actual and last coordinates and laser power
         string line;
@@ -456,17 +512,41 @@ namespace WindowsFormsApplication1
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             if (adjustedImage == null) return;//if no image, do nothing
+            float resol = Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);//Resolution (or laser spot size)
+            float w = Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat);//Get the user input value only for check for cancel if not valid         
+            float h = Convert.ToSingle(tbHeight.Text, CultureInfo.InvariantCulture.NumberFormat);//Get the user input value only for check for cancel if not valid              
+
+            if ((resol <= 0) | (adjustedImage.Width < 1) | (adjustedImage.Height < 1) | (w < 1) | (h < 1))
+            {
+                MessageBox.Show("Check widht, height and resolution values.", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (Convert.ToInt32(tbFeedRate.Text) < 1)
+            {
+                MessageBox.Show("Check feedrate value.", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (saveFileDialog1.ShowDialog() == DialogResult.Cancel) return;
-            
+
+            Int32 lin;//top/botom pixel
+            Int32 col;//Left/right pixel
+
             lblStatus.Text="Generating file...";
             Refresh();
 
             List<string> fileLines;
             fileLines = new List<string>();
-            float resol=Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat);//Resolution (or laser spot size)
-            if (rbUseS.Checked) szChar = 'S'; else sz = 'Z';
+            //S or Z use as power command
+            if (rbUseS.Checked) szChar = 'S'; else szChar = 'Z';
 
             //first Gcode line
+            line = "(Generated by 3dpBurner Image2Gcode " + ver+")";
+            fileLines.Add(line);
+            line="(@"+DateTime.Now.ToString("MMM/dd/yyy HH:mm:ss)");
+            fileLines.Add(line);
+
+
+
             line = "M5\r";//Make sure laser off
             fileLines.Add(line);
 
@@ -480,62 +560,172 @@ namespace WindowsFormsApplication1
             }
             line = "G90\r";//Absolute coordinates
             fileLines.Add(line);
-            line = "G21\r";//Metric units
+
+            if (imperialinToolStripMenuItem.Checked) line = "G20\r";//Imperial units
+                else line = "G21\r";//Metric units
             fileLines.Add(line);
             line = "F" + tbFeedRate.Text + "\r";//Feedrate
             fileLines.Add(line);
-            //Goto rapid move to lef top corner
-            line = "G0X0Y" + string.Format(CultureInfo.InvariantCulture.NumberFormat, "{0:0.###}", adjustedImage.Height * Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
-            fileLines.Add(line);
-            line = "G1\r";//G1 mode
-            fileLines.Add(line);
-            line = "M3\r";//Switch laser on
-            fileLines.Add(line);
+
+            //Generate picture Gcode
+            Int32 pixTot = adjustedImage.Width * adjustedImage.Height;
+            Int32 pixBurned = 0;
             //////////////////////////////////////////////
             // Generate Gcode lines by Horozontal scanning
             //////////////////////////////////////////////
-            Int32 lin = adjustedImage.Height - 1;//top tile
-            Int32 col = 0;//Left pixel
-            while (lin>=0)
+            if (cbEngravingPattern.Text == "Horizontal scanning")
             {
-                //Y coordinate
-                coordY=resol * (float) lin;           
-                while (col<adjustedImage.Width)//From left to right
+                //Goto rapid move to lef top corner
+                line = "G0X0Y" + string.Format(CultureInfo.InvariantCulture.NumberFormat, "{0:0.###}", adjustedImage.Height * Convert.ToSingle(tbRes.Text, CultureInfo.InvariantCulture.NumberFormat));
+                fileLines.Add(line);
+                line = "G1\r";//G1 mode
+                fileLines.Add(line);
+                line = "M3\r";//Switch laser on
+                fileLines.Add(line);
+
+                //Start image
+                lin = adjustedImage.Height - 1;//top tile
+                col = 0;//Left pixel
+                while (lin >= 0)
                 {
-                    //X coordinate
-                    coordX = resol * (float)col;
-                    //Power value
-                    Color cl = adjustedImage.GetPixel(col, (adjustedImage.Height - 1)-lin);//Get pixel color
-                    sz = 255-cl.R;
-                    generateLine();
-                    if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
-                    lastX=coordX;
-                    lastY=coordY;
-                    lastSz=sz;
+                    //Y coordinate
+                    coordY = resol * (float)lin;
+                    while (col < adjustedImage.Width)//From left to right
+                    {
+                        //X coordinate
+                        coordX = resol * (float)col;
+                        //Power value
+                        Color cl = adjustedImage.GetPixel(col, (adjustedImage.Height - 1) - lin);//Get pixel color
+                        sz = 255 - cl.R;
+                        sz = interpolate(sz, Convert.ToInt32(tbLaserMin.Text), Convert.ToInt32(tbLaserMax.Text));
+                        generateLine();
+                        pixBurned++;
+                        //adjustedImage.SetPixel(col, (adjustedImage.Height-1)-lin, Color.Red);
+                        //pictureBox1.Image = adjustedImage;
+                        //Refresh();
+
+                        if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
+                        lastX = coordX;
+                        lastY = coordY;
+                        lastSz = sz;
+                        col++;
+                    }
+                    col--;
+                    lin--;
+                    coordY = resol * (float)lin;
+                    while ((col >= 0) & (lin >= 0))//From right to left
+                    {
+                        //X coordinate
+                        coordX = resol * (float)col;
+                        //Power value
+                        Color cl = adjustedImage.GetPixel(col, (adjustedImage.Height - 1) - lin);//Get pixel color
+                        sz = 255 - cl.R;
+                        sz = interpolate(sz, Convert.ToInt32(tbLaserMin.Text), Convert.ToInt32(tbLaserMax.Text));
+                        generateLine();
+                        pixBurned++;
+                        //adjustedImage.SetPixel(col, (adjustedImage.Height-1)-lin, Color.Red);
+                        //pictureBox1.Image = adjustedImage;
+                        //Refresh();
+
+                        if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
+                        lastX = coordX;
+                        lastY = coordY;
+                        lastSz = sz;
+                        col--;
+                    }
                     col++;
+                    lin--;
+                    lblStatus.Text = "Generating file... " + Convert.ToString((pixBurned*100)/pixTot ) + "%";
+                    Refresh();
                 }
-                col--;
-                lin--;
-                coordY = resol * (float)lin; 
-                while ((col >= 0)&(lin>=0))//From right to left
+
+            }
+            //////////////////////////////////////////////
+            // Generate Gcode lines by Diagonal scanning
+            //////////////////////////////////////////////
+            else
+            {
+                //Goto rapid move to lef top corner
+                line = "G0X0Y0";
+                fileLines.Add(line);
+                line = "G1\r";//G1 mode
+                fileLines.Add(line);
+                line = "M3\r";//Switch laser on
+                fileLines.Add(line);
+
+                //Start image
+                col = 0;
+                lin = 0;
+            while((col<adjustedImage.Width)|(lin<adjustedImage.Height))          
+            {
+                while ((col < adjustedImage.Width)&(lin>=0))
                 {
+                    //Y coordinate
+                    coordY = resol * (float)lin;
                     //X coordinate
                     coordX = resol * (float)col;
+
                     //Power value
                     Color cl = adjustedImage.GetPixel(col, (adjustedImage.Height - 1) - lin);//Get pixel color
                     sz = 255 - cl.R;
-                    generateLine();
-                    if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
-                    lastX=coordX;
-                    lastY=coordY;
-                    lastSz=sz;
-                    col--;
-                }
-                col++;
-                lin--;
+                    sz = interpolate(sz, Convert.ToInt32(tbLaserMin.Text), Convert.ToInt32(tbLaserMax.Text));
 
-                lblStatus.Text = "Generating file... " + Convert.ToString(((adjustedImage.Height - 1) - lin) * 100 / (adjustedImage.Height - 1)) + "%";
-                Refresh();
+                    generateLine();
+                    pixBurned++;
+
+                    //adjustedImage.SetPixel(col, (adjustedImage.Height-1)-lin, Color.Red);
+                    //pictureBox1.Image = adjustedImage;
+                    //Refresh();
+
+                    if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
+                    lastX = coordX;
+                    lastY = coordY;
+                    lastSz = sz;
+
+                    col++;
+                    lin--;
+                }
+                col--;
+                lin++;
+
+                if (col >= adjustedImage.Width-1) lin++;
+                else col++;
+                 while ((col >=0)&(lin<adjustedImage.Height))
+                {
+                    //Y coordinate
+                    coordY = resol * (float)lin;
+                    //X coordinate
+                    coordX = resol * (float)col;
+
+                    //Power value
+                    Color cl = adjustedImage.GetPixel(col, (adjustedImage.Height - 1) - lin);//Get pixel color
+                    sz = 255 - cl.R;
+                    sz = interpolate(sz, Convert.ToInt32(tbLaserMin.Text), Convert.ToInt32(tbLaserMax.Text));
+
+                    generateLine();
+                    pixBurned++;
+                    
+                    //adjustedImage.SetPixel(col, (adjustedImage.Height-1)-lin, Color.Red);
+                    //pictureBox1.Image = adjustedImage;
+                   // Refresh();
+
+                    if (!string.IsNullOrEmpty(line)) fileLines.Add(line);
+                    lastX = coordX;
+                    lastY = coordY;
+                    lastSz = sz;
+
+                    col--;
+                    lin++;
+                }
+                 col++;
+                 lin--;
+                 if (lin >= adjustedImage.Height-1) col++;
+                 else lin++;
+                 lblStatus.Text = "Generating file... " + Convert.ToString((pixBurned * 100) / pixTot) + "%"; 
+                 Refresh();
+            }
+
+
             }
             //Edge lines
             if (cbEdgeLines.Checked)
@@ -544,7 +734,7 @@ namespace WindowsFormsApplication1
                 fileLines.Add(line);
                 line = "G0X0Y0\r";
                 fileLines.Add(line);
-                line = "M3S255\r";
+                line = "M3S" + tbLaserMax.Text + "\r";
                 fileLines.Add(line);
                 line = "G1X0Y"+string.Format(CultureInfo.InvariantCulture.NumberFormat,"{0:0.###}",(adjustedImage.Height-1)*resol)+"\r";
                 fileLines.Add(line);
@@ -568,7 +758,7 @@ namespace WindowsFormsApplication1
             Refresh();
             //Save file
             File.WriteAllLines(saveFileDialog1.FileName , fileLines);
-            lblStatus.Text="Done";
+            lblStatus.Text = "Done (" + Convert.ToString(pixBurned) + "/" + Convert.ToString(pixTot)+")";
         }
         //Horizontal mirroing
         private void btnHorizMirror_Click(object sender, EventArgs e)
@@ -604,9 +794,8 @@ namespace WindowsFormsApplication1
             string s = tbHeight.Text;
             tbHeight.Text = tbWidth.Text;
             tbWidth.Text = s;
-            //tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-            //userAdjust();
             pictureBox1.Image = adjustedImage;
+            autoZoomToolStripMenuItem_Click(this, null);
             lblStatus.Text = "Done";
         }
         //Rotate left
@@ -621,9 +810,8 @@ namespace WindowsFormsApplication1
             string s = tbHeight.Text;
             tbHeight.Text = tbWidth.Text;
             tbWidth.Text = s;
-            //tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text, CultureInfo.InvariantCulture.NumberFormat) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
-            //userAdjust();
             pictureBox1.Image = adjustedImage;
+            autoZoomToolStripMenuItem_Click(this, null);
             lblStatus.Text = "Done";
         }
         //Invert image color
@@ -632,7 +820,7 @@ namespace WindowsFormsApplication1
             if (adjustedImage == null) return;//if no image, do nothing
             adjustedImage = imgInvert(adjustedImage);
             originalImage= imgInvert(originalImage);
-            userAdjust();
+            pictureBox1.Image = adjustedImage;
         }
 
         private void cbDirthering_SelectedIndexChanged(object sender, EventArgs e)
@@ -648,27 +836,125 @@ namespace WindowsFormsApplication1
             else
                 userAdjust();
         }
-        //preview mode normal/autozoom
-        private void cbPreviewZoom_CheckedChanged(object sender, EventArgs e)
+        //Feedrate Text changed
+        private void tbFeedRate_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (cbPreviewZoom.Checked)
+            //Prevent any not allowed char
+            if (!checkDigitInteger(e.KeyChar))
             {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
+        }
+        //Metric units selected
+        private void metricmmToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            imperialinToolStripMenuItem.Checked = false;
+            gbDimensions.Text = "Output (mm)";
+            lblFeedRateUnits.Text = "mm/min";
+        }
+        //Imperial unitsSelected
+        private void imperialinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            metricmmToolStripMenuItem.Checked = false;
+            gbDimensions.Text = "Output (in)";
+            lblFeedRateUnits.Text = "in/min";
+        }
+        //About dialog
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 frmAbout = new Form2();
+            frmAbout.ShowDialog();
+        }
+        //Preview AutoZoom
+        private void autoZoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (autoZoomToolStripMenuItem.Checked)
+            {
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
                 pictureBox1.Width = panel1.Width;
                 pictureBox1.Height = panel1.Height;
                 pictureBox1.Top = 0;
                 pictureBox1.Left = 0;
-                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             }
             else
             {
                 pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
-                if (pictureBox1.Width>panel1.Width) pictureBox1.Left=0; else pictureBox1.Left = (panel1.Width / 2) - (pictureBox1.Width / 2);
-                if (pictureBox1.Height>panel1.Height) pictureBox1.Top=0; else pictureBox1.Top = (panel1.Height / 2) - (pictureBox1.Height / 2);
-
-                //pictureBox1.Top = (panel1.Height / 2) - (pictureBox1.Height / 2);
-                //pictureBox1.Left = (panel1.Width / 2) - (pictureBox1.Width / 2);
+                if (pictureBox1.Width > panel1.Width) pictureBox1.Left = 0; else pictureBox1.Left = (panel1.Width / 2) - (pictureBox1.Width / 2);
+                if (pictureBox1.Height > panel1.Height) pictureBox1.Top = 0; else pictureBox1.Top = (panel1.Height / 2) - (pictureBox1.Height / 2);
             }
         }
+        //Laser Min keyPress
+        private void tbLaserMin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Prevent any not allowed char
+            if (!checkDigitInteger(e.KeyChar))
+            {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
+        }
+        //Laser Max keyPress
+        private void tbLaserMax_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Prevent any not allowed char
+            if (!checkDigitInteger(e.KeyChar))
+            {
+                e.Handled = true;//Stop the character from being entered into the control since it is non-numerical.
+                return;
+            }
+        }
+        //OpenFile, save picture grayscaled to originalImage and save the original aspect ratio to ratio
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openFileDialog1.ShowDialog() == DialogResult.Cancel) return;//if no image, do nothing
+                if (!File.Exists(openFileDialog1.FileName)) return;
+                lblStatus.Text = "Opening file...";
+                Refresh();
+                tBarBrightness.Value = 0;
+                tBarContrast.Value = 0;
+                tBarGamma.Value = 100;
+                lblBrightness.Text = Convert.ToString(tBarBrightness.Value);
+                lblContrast.Text = Convert.ToString(tBarContrast.Value);
+                lblGamma.Text = Convert.ToString(tBarGamma.Value / 100.0f);
+                originalImage = new Bitmap(Image.FromFile(openFileDialog1.FileName));
+                originalImage = imgGrayscale(originalImage);
+                adjustedImage = new Bitmap(originalImage);
+                ratio = (originalImage.Width + 0.0f) / originalImage.Height;//Save ratio for future use if needled
+                if (cbLockRatio.Checked) tbHeight.Text = Convert.ToString((Convert.ToSingle(tbWidth.Text) / ratio), CultureInfo.InvariantCulture.NumberFormat);//Initialize y size
+                userAdjust();
+                lblStatus.Text = "Done";
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("Error opening file: " + err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        //Exit Menu
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
