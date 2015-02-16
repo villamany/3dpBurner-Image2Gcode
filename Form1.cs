@@ -1,12 +1,4 @@
-﻿/*Changelog since last commit:
- * Bug fix ("Use Z" as power command produced wrong lines)
- * Some other minor bugs fix
- * Added diagonal Gcode generation mode
- * Added imperial/metric units
- * Added about dialog
- * Some gui improvements
-
-/*  3dpBurner Image2Gcode. A Image to GCODE converter for GRBL based devices.
+﻿/*  3dpBurner Image2Gcode. A Image to GCODE converter for GRBL based devices.
     This file is part of 3dpBurner Image2Gcode application.
    
     Copyright (C) 2015  Adrian V. J. (villamany) contact: villamany@gmail.com
@@ -38,11 +30,11 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 
 
-namespace WindowsFormsApplication1
+namespace _3dpBurnerImage2Gcode
 {
     public partial class Form1 : Form
     {
-        const string ver = "v0.1development";
+        const string ver = "v0.1";
         Bitmap originalImage;
         Bitmap adjustedImage;
         float lastValue;//Aux for apply processing to image only when a new value is detected
@@ -51,14 +43,77 @@ namespace WindowsFormsApplication1
             InitializeComponent();
         }
         float ratio; //Used to lock the aspect ratio when the option is selected
-        //Image manipulatios is as follow.
-        
-        //-Open image copy to OriginalImage, apply grayscale and sabe into the same ogiginal image, copy originalImage to adjustedImage and display adjusted image
-        
-        //-Apply resice to original image by user and display
-        //-Aplly Balance= user brighness, contrast and and gamma inputed by user to adjustedImage and display it
-        //-Apply dirthering if selected to adjusted image and display it
-        //The operations as rotate, flip and invert are apllye directly to booth originalImage and adjustedImage
+        //Save settings
+        private void saveSettings()
+        {
+            try
+            {
+                string set;
+                Properties.Settings.Default.autoZoom=autoZoomToolStripMenuItem.Checked;
+                if (imperialinToolStripMenuItem.Checked) set = "imperial";
+                    else set = "metric";
+                Properties.Settings.Default.units =set;
+                Properties.Settings.Default.width = tbWidth.Text;
+                Properties.Settings.Default.height = tbHeight.Text;
+                Properties.Settings.Default.resolution = tbRes.Text;
+                Properties.Settings.Default.minPower = tbLaserMin.Text;
+                Properties.Settings.Default.maxPower = tbLaserMax.Text;
+                Properties.Settings.Default.header = rtbPreGcode.Text;
+                Properties.Settings.Default.footer = rtbPostGcode.Text;
+                Properties.Settings.Default.feedrate = tbFeedRate.Text;
+                if (rbUseZ.Checked) set = "Z";
+                else set = "S";
+                Properties.Settings.Default.powerCommand = set;
+                Properties.Settings.Default.pattern = cbEngravingPattern.Text;
+                Properties.Settings.Default.edgeLines = cbEdgeLines.Checked;
+
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error saving config: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+        }
+        //Load settings
+        private void loadSettings()
+        {
+            try
+            {
+                autoZoomToolStripMenuItem.Checked=Properties.Settings.Default.autoZoom;
+                autoZoomToolStripMenuItem_Click(this, null);
+
+                if (Properties.Settings.Default.units=="imperial")
+                {
+                    imperialinToolStripMenuItem.Checked=true;
+                    imperialinToolStripMenuItem_Click(this,null);
+                }
+                else 
+                {
+                    metricmmToolStripMenuItem.Checked=true;
+                    metricmmToolStripMenuItem_Click(this,null);
+                }
+                tbWidth.Text=Properties.Settings.Default.width;
+                tbHeight.Text=Properties.Settings.Default.height;
+                tbRes.Text=Properties.Settings.Default.resolution;
+                tbLaserMin.Text=Properties.Settings.Default.minPower;
+                tbLaserMax.Text=Properties.Settings.Default.maxPower;
+                rtbPreGcode.Text=Properties.Settings.Default.header;
+                rtbPostGcode.Text=Properties.Settings.Default.footer;
+                tbFeedRate.Text=Properties.Settings.Default.feedrate;
+                if (Properties.Settings.Default.powerCommand == "Z")
+                    rbUseZ.Checked = true;
+                        else rbUseS.Checked = true;
+                cbEngravingPattern.Text=Properties.Settings.Default.pattern;
+                cbEdgeLines.Checked=Properties.Settings.Default.edgeLines;
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error saving config: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+        }
         
         //Interpolate a 8 bit grayscale value (0-255) between min,max
         private Int32 interpolate(Int32 grayValue, Int32 min, Int32 max)
@@ -389,6 +444,8 @@ namespace WindowsFormsApplication1
         {
             Text = "3dpBurner Image2Gcode " + ver;
             lblStatus.Text = "Done";
+            loadSettings();
+
             autoZoomToolStripMenuItem_Click(this, null);//Set preview zoom mode
         }
         //Width confirmed by user by the enter key
@@ -937,10 +994,10 @@ namespace WindowsFormsApplication1
         {
             Close();
         }
-
-        private void label10_Click(object sender, EventArgs e)
+        //On form closing
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            saveSettings();
         }
 
 

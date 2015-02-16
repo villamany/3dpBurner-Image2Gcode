@@ -22,5 +22,161 @@ namespace _3dpBurnerImage2Gcode.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool autoZoom {
+            get {
+                return ((bool)(this["autoZoom"]));
+            }
+            set {
+                this["autoZoom"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("metric")]
+        public string units {
+            get {
+                return ((string)(this["units"]));
+            }
+            set {
+                this["units"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public string width {
+            get {
+                return ((string)(this["width"]));
+            }
+            set {
+                this["width"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public string height {
+            get {
+                return ((string)(this["height"]));
+            }
+            set {
+                this["height"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.18")]
+        public string resolution {
+            get {
+                return ((string)(this["resolution"]));
+            }
+            set {
+                this["resolution"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string minPower {
+            get {
+                return ((string)(this["minPower"]));
+            }
+            set {
+                this["minPower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string maxPower {
+            get {
+                return ((string)(this["maxPower"]));
+            }
+            set {
+                this["maxPower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(Header)\r\nG0 X0 Y0\r\n(Header end)")]
+        public string header {
+            get {
+                return ((string)(this["header"]));
+            }
+            set {
+                this["header"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(Footer)\r\nG0 X0 Y0\r\n(Footer end)")]
+        public string footer {
+            get {
+                return ((string)(this["footer"]));
+            }
+            set {
+                this["footer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public string feedrate {
+            get {
+                return ((string)(this["feedrate"]));
+            }
+            set {
+                this["feedrate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("S")]
+        public string powerCommand {
+            get {
+                return ((string)(this["powerCommand"]));
+            }
+            set {
+                this["powerCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Horizontal scanning")]
+        public string pattern {
+            get {
+                return ((string)(this["pattern"]));
+            }
+            set {
+                this["pattern"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool edgeLines {
+            get {
+                return ((bool)(this["edgeLines"]));
+            }
+            set {
+                this["edgeLines"] = value;
+            }
+        }
     }
 }

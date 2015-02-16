@@ -15,7 +15,7 @@
 */
 //Form 1 (Main form design)
 
-namespace WindowsFormsApplication1
+namespace _3dpBurnerImage2Gcode
 {
     partial class Form1
     {
@@ -347,7 +347,6 @@ namespace WindowsFormsApplication1
             this.label10.Size = new System.Drawing.Size(184, 66);
             this.label10.TabIndex = 30;
             this.label10.Text = "GrayScale values (0-255) will be interpolated between Min and Max Power Values.";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
             // tbLaserMax
             // 
@@ -789,9 +788,7 @@ namespace WindowsFormsApplication1
             // 
             // autoZoomToolStripMenuItem
             // 
-            this.autoZoomToolStripMenuItem.Checked = true;
             this.autoZoomToolStripMenuItem.CheckOnClick = true;
-            this.autoZoomToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoZoomToolStripMenuItem.Name = "autoZoomToolStripMenuItem";
             this.autoZoomToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.autoZoomToolStripMenuItem.Text = "Preview AutoZoom";
@@ -808,9 +805,7 @@ namespace WindowsFormsApplication1
             // 
             // metricmmToolStripMenuItem
             // 
-            this.metricmmToolStripMenuItem.Checked = true;
             this.metricmmToolStripMenuItem.CheckOnClick = true;
-            this.metricmmToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.metricmmToolStripMenuItem.Name = "metricmmToolStripMenuItem";
             this.metricmmToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.metricmmToolStripMenuItem.Text = "Metric (mm)";
@@ -855,6 +850,7 @@ namespace WindowsFormsApplication1
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "3dpBurner Image2Gcode";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();

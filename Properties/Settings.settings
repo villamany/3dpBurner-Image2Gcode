@@ -1,7 +1,49 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="_3dpBurnerImage2Gcode.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="autoZoom" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="units" Type="System.String" Scope="User">
+      <Value Profile="(Default)">metric</Value>
+    </Setting>
+    <Setting Name="width" Type="System.String" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="height" Type="System.String" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="resolution" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.18</Value>
+    </Setting>
+    <Setting Name="minPower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="maxPower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="header" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(Header)
+G0 X0 Y0
+(Header end)</Value>
+    </Setting>
+    <Setting Name="footer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(Footer)
+G0 X0 Y0
+(Footer end)</Value>
+    </Setting>
+    <Setting Name="feedrate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="powerCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">S</Value>
+    </Setting>
+    <Setting Name="pattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Horizontal scanning</Value>
+    </Setting>
+    <Setting Name="edgeLines" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

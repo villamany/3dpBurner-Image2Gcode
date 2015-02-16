@@ -21,7 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindowsFormsApplication1
+namespace _3dpBurnerImage2Gcode
 {
     static class Program
     {

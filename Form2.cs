@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WindowsFormsApplication1
+namespace _3dpBurnerImage2Gcode
 {
     public partial class Form2 : Form
     {

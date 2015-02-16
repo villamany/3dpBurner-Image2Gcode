@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace _3dpBurnerImage2Gcode
 {
     partial class Form2
     {
